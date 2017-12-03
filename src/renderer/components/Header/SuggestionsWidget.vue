@@ -1,0 +1,67 @@
+<template>
+  <transition name="slip-fade-up">
+    <div id="app-search-suggestions" v-if="isFocused">
+      <div class="swish-text-minitext" v-if="userQuery">SEARCHING FOR {{userQuery}}</div>
+      <div class="swish-search-suggestion" v-for="result of queryResults" :key="result.title" v-if="userQuery" @click="$emit('updateQuery', result.title)">
+        <div class="swish-search-suggestion-title">
+          <span class="swish-text-title">{{ result.title }}</span>
+          <span class="swish-text-subtitle" v-if="result.subtitle">{{ result.subtitle }}</span>
+        </div>
+        <div class="swish-text-helptext" v-if="result.helptext">{{ result.helptext }}</div>
+      </div>
+      <div v-if="!userQuery" style="text-align: center; padding: 40px;">
+        <p style="line-height: 1.5; max-width: 60%; margin: 0 auto;">Input a song title, genre, keyword, etc. and let the results flow...</p>
+      </div>
+    </div>
+  </transition>
+</template>
+<script>
+  export default {
+    props: ['userQuery', 'isFocused'],
+    data: () => ({
+      sampleQueryResults: [
+        { type: 'text', title: '', subtitle: 'Featured', helptext: 'You and many other users like this', genre: 'General' },
+        { type: 'text', title: ' music', subtitle: 'Featured', helptext: 'A general search term for keywords', genre: 'General' },
+        { type: 'text', title: ' playlist', helptext: 'Recommended for longer music excursions', genre: 'General' },
+        { type: 'text', title: ' remixes', genre: 'General' },
+        { type: 'text', title: ' for studying', genre: 'General' },
+        { type: 'text', title: ' video', genre: 'General' }
+      ]
+    }),
+    computed: {
+      queryResults: function () {
+        return this.sampleQueryResults.map((r) => {
+          const res = { ...r };
+          res.title = this.userQuery + r.title;
+          return res;
+        });
+      }
+    }
+  };
+</script>
+<style lang="scss">
+  #app-search-suggestions {
+    position: fixed;
+    top: 80px;
+    border: 1px solid #EFEFEF;
+    background-color: #FAFAFA;
+    border-radius: 6px;
+    width: 60%;
+    box-shadow: 0px 2px 16px 8px rgba(100, 100, 100, 0.1);
+    transition: all 300ms ease;
+
+    .swish-text-minitext { padding: 8px 12px; }
+  }
+  .swish-search-suggestion {
+    box-sizing: border-box;
+    padding: 8px 12px;
+    width: 100%;
+    
+    .swish-text-subtitle { margin-left: 8px; }
+
+    &:hover {
+      background-color: rgba(100, 100, 100, 0.1);
+      cursor: pointer;
+    }
+  }
+</style>
