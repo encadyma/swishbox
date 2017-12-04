@@ -25,6 +25,11 @@
         this.isFocused = false;
         if (this.userQuery) this.$router.push({ name: 'search-page', query: { q: this.userQuery } });
       }
+    },
+    watch: {
+      isFocused: function (val) {
+        this.$store.dispatch('INTERFACE_SET_OVERLAY', val);
+      }
     }
   };
 </script>

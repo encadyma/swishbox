@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <header-bar></header-bar>
+    <div id="app-overlay" :class="{ hidden: !$store.state.Interface.overlayEnabled }"></div>
     <div style="padding-top: 65px;"><router-view></router-view></div>
     <notifications group="player" position="bottom right"/>
     <v-dialog/>
@@ -32,6 +33,17 @@
   #app {
     background-color: rgba(255, 255, 255, 0.9);
     z-index: 1;
+  }
+
+  #app-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 98;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: 300ms ease;
+
+    &.hidden { background-color: rgba(0, 0, 0, 0); visibility: hidden; transition: 300ms ease; }
   }
 
   .swish-head-betitle {
