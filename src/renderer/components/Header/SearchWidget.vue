@@ -18,18 +18,27 @@
     }),
     methods: {
       updateQuery: function (newQuery) {
+        // Called when the user selected something from the menu
         this.userQuery = newQuery;
         this.submitQuery();
       },
       submitQuery: function () {
+        // Defocus the search box and navigate to the search page
         this.isFocused = false;
         if (this.userQuery) this.$router.push({ name: 'search-page', query: { q: this.userQuery } });
       }
     },
     watch: {
       isFocused: function (val) {
+        // Activate the overlay appropriately.
         this.$store.dispatch('INTERFACE_SET_OVERLAY', val);
       }
+    },
+    mounted: function () {
+      // Clear out the search query when navigating to the home page
+      this.$watch('$route.name', function (newVal, oldVal) {
+        if (oldVal !== newVal && newVal === 'landing-page') this.userQuery = '';
+      });
     }
   };
 </script>

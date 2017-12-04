@@ -1,7 +1,10 @@
 <template>
   <transition name="slip-fade-up">
     <div id="app-search-suggestions" v-if="isFocused">
+      
       <div class="swish-text-minitext" v-if="userQuery">SEARCHING FOR {{userQuery}}</div>
+
+      <!-- BEGIN SUGGESTIONS -->
       <div class="swish-search-suggestion" v-for="result of queryResults" :key="result.title" v-show="userQuery" @click="$emit('updateQuery', result.title)">
         <div class="swish-search-suggestion-title">
           <span class="swish-text-title">{{ result.title }}</span>
@@ -9,9 +12,13 @@
         </div>
         <div class="swish-text-helptext" v-if="result.helptext">{{ result.helptext }}</div>
       </div>
+      <!--  END SUGGESTIONS  -->
+
+      <!-- Show when there is nothing searched for -->
       <div v-if="!userQuery" style="text-align: center; padding: 40px;">
         <p style="line-height: 1.5; max-width: 60%; margin: 0 auto;">Input a song title, genre, keyword, etc. and let the results flow...</p>
       </div>
+
     </div>
   </transition>
 </template>
@@ -30,6 +37,7 @@
     }),
     computed: {
       queryResults: function () {
+        // Give false suggestions based on sample query results
         return this.sampleQueryResults.map((r) => {
           const res = { ...r };
           res.title = this.userQuery + r.title;

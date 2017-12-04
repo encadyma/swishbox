@@ -1,10 +1,14 @@
 <template>
   <transition name="slip-fade-up">
     <div id="app-header-playlist" v-if="isPlaylistToggled">
+
+      <!-- Top bar with Title + Clear button -->
       <div>
         <div class="swish-text-minitext" style="float: left;">CURRENT PLAYLIST</div>
         <div class="swish-text-minitext swish-text-button" :class="{ disabled: Playlist.playlist.length === 0 }" style="float: right;" @click="clearPlaylist">CLEAR</div>
       </div>
+
+      <!-- Container for playlist songs. Overflow if needed. -->
       <div style="max-height: 360px; overflow: scroll; clear: both;">
         <div class="swish-playlist-item" v-for="(song, index) of Playlist.playlist" :key="song.title" v-show="Playlist.playlist.length" @click="selectSong(index)" @dblclick="switchSongs(index)"  :class="{ selected: selectedSong === index, playing: Playlist.currentPosition === index }">
           <div class="swish-playlist-item-title">
@@ -14,13 +18,18 @@
           </div>
         </div>
       </div>
+
+      <!-- Playlist Counter -->
       <div v-if="Playlist.playlist.length" class="swish-text-miniminitext swish-playlist-counter">THERE ARE {{Playlist.playlist.length}} SONGS IN YOUR PLAYLIST</div>
+      
+      <!-- Show when there are no songs in the playlist -->
       <div v-if="!Playlist.playlist.length" style="text-align: center; padding: 40px;">
         <p style="line-height: 1.5; max-width: 60%; margin: 0 auto;">There are no songs in the playlist yet. Why not search for a bit and add some?</p>
       </div>
     </div>
   </transition>
 </template>
+
 <script>
   import { mapState } from 'vuex';
 
@@ -51,9 +60,16 @@
       switchSongs(index) {
         this.$store.dispatch('PLAYLIST_CHANGE_SONG', index);
       }
+    },
+    watch: {
+      isPlaylistToggled: function (val) {
+        // Deselect any selected songs once the playlist is hidden
+        if (!val) this.selectedSong = -1;
+      }
     }
   };
 </script>
+
 <style lang="scss">
   #app-header-playlist {
     position: fixed;
