@@ -61,6 +61,23 @@
     font-weight: 600;
   }
 
+  .swish-text-button {
+    color: rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    &:hover { color: rgba(0, 0, 0, 0.5); }
+    &.disabled { cursor: default; color: rgba(0, 0, 0, 0.2); }
+  }
+
+  .swish-text-miniminitext {
+    color: rgba(0, 0, 0, 0.35);
+    font-size: 0.7em;
+    font-weight: 600;
+  }
+
+  .swish-block-padded-vert { padding: 8px 0; }
+
+  .swish-text-center { text-align: center; }
+
   // TRANSITIONS
   .slip-fade-up-enter-active, .slip-fade-up-enter-active { transition: 300ms ease; }
   .slip-fade-up-enter, .slip-fade-up-leave-to { opacity: 0; transform: translateY(-20px); }

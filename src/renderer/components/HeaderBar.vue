@@ -1,20 +1,31 @@
 <template>
   <header id="app-header">
     <transition :name="($route.name === 'landing-page' ? 'slip-fade-left' : 'slip-fade-right')" mode="out-in">
-      <h1 class="app-head-title" v-if="$route.name === 'landing-page'" key="Swish">Swish</h1>
-      <i class="app-head-title material-icons" v-else @click="$router.push('/')" key="Back">arrow_back</i>
+      <h1 class="app-head-title" style="cursor: default;" v-if="$route.name === 'landing-page'" key="Swish">Swish</h1>
+      <i class="app-head-title material-icons" v-else @click="goBack()" key="Back">arrow_back</i>
     </transition>
     <search-widget style="width: 50%; -webkit-app-region: no-drag;"></search-widget>
     <div class="flack-spacing"></div>
-    <traffic-lights></traffic-lights>
+    <traffic-lights @togglePlaylist="enablePlaylist = !enablePlaylist"></traffic-lights>
+    <playlist-widget :isPlaylistToggled="enablePlaylist"></playlist-widget>
   </header>
 </template>
 <script>
   import SearchWidget from './Header/SearchWidget';
   import TrafficLights from './Header/TrafficLights';
+  import PlaylistWidget from './Header/PlaylistWidget';
 
   export default {
-    components: { SearchWidget, TrafficLights },
+    data: function () {
+      return { enablePlaylist: false };
+    },
+    components: { SearchWidget, TrafficLights, PlaylistWidget },
+    methods: {
+      goBack: function () {
+        if (this.$route.name === 'search-page') return this.$router.push('/');
+        return this.$router.go(-1);
+      }
+    }
   };
 </script>
 <style lang="scss">
@@ -39,8 +50,11 @@
       margin: 0 10px;
       min-width: 80px;
       text-align: center;
+      -webkit-user-select: none;
+      transition: 250ms ease;
 
-      &.material-icons { font-size: 1.8em; }
+      &.material-icons { font-size: 1.8em; color: rgba(0, 0, 0, 0.6); }
+      &.material-icons:hover { color: rgba(0, 0, 0, 0.8); }
     }
   }
 

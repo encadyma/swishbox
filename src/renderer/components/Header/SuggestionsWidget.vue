@@ -49,6 +49,8 @@
     width: 60%;
     box-shadow: 0px 2px 16px 8px rgba(100, 100, 100, 0.1);
     transition: all 300ms ease;
+    cursor: default;
+    -webkit-user-select: none;
 
     .swish-text-minitext { padding: 8px 12px; }
   }

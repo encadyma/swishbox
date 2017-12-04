@@ -1,5 +1,6 @@
 <template>
   <div id="app-electron-traffic-lights">
+    <div class="swish-electron-traffic-light" @click="openPlaylist"><i class="material-icons" style="margin-left: 2px;">playlist_play</i></div>
     <div class="swish-electron-traffic-light" @click="minimizeApp"><i class="material-icons">remove</i></div>
     <div class="swish-electron-traffic-light" @click="closeApp"><i class="material-icons">close</i></div>
   </div>
@@ -19,6 +20,9 @@
       },
       minimizeApp: function () {
         this.$electron.ipcRenderer.send('APP_MINIMIZE');
+      },
+      openPlaylist: function () {
+        this.$emit('togglePlaylist');
       }
     }
   };
@@ -27,6 +31,7 @@
   #app-electron-traffic-lights {
     display: inline-block;
     vertical-align: middle;
+    -webkit-user-select: none;
   }
   .swish-electron-traffic-light {
     display: inline-block;
