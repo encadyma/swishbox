@@ -10,7 +10,7 @@
   export default {
     components: { SuggestionWidget },
     data: () => ({
-      isFocused: true,
+      isFocused: false,
       placeholder: 'Search for music...',
       userQuery: ''
     }),

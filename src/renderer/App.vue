@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <header-bar></header-bar>
-    <div style="padding-top: 70px;"><router-view></router-view></div>
+    <div style="padding-top: 65px;"><router-view></router-view></div>
+    <notifications group="player" position="bottom right"/>
   </div>
 </template>
 
@@ -16,8 +17,25 @@
 
 <style lang="scss">
 
+  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700');
+  @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body { font-family: 'Source Sans Pro', sans-serif; }
+
   #app {
+    background-color: rgba(255, 255, 255, 0.9);
     z-index: 1;
+  }
+
+  .swish-head-betitle {
+    font-size: 2.4em;
+    font-weight: 300;
   }
 
   .swish-text-title {
@@ -45,5 +63,11 @@
   // TRANSITIONS
   .slip-fade-up-enter-active, .slip-fade-up-enter-active { transition: 300ms ease; }
   .slip-fade-up-enter, .slip-fade-up-leave-to { opacity: 0; transform: translateY(-20px); }
+
+  .slip-fade-left-enter-active, .slip-fade-left-enter-active { transition: 300ms ease; }
+  .slip-fade-left-enter, .slip-fade-left-leave-to { opacity: 0; transform: translate(-20px); }
+
+  .slip-fade-right-enter-active, .slip-fade-right-enter-active { transition: 300ms ease; }
+  .slip-fade-right-enter, .slip-fade-right-leave-to { opacity: 0; transform: translate(20px); }
 
 </style>

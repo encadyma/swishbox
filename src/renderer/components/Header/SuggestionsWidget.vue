@@ -2,7 +2,7 @@
   <transition name="slip-fade-up">
     <div id="app-search-suggestions" v-if="isFocused">
       <div class="swish-text-minitext" v-if="userQuery">SEARCHING FOR {{userQuery}}</div>
-      <div class="swish-search-suggestion" v-for="result of queryResults" :key="result.title" v-if="userQuery" @click="$emit('updateQuery', result.title)">
+      <div class="swish-search-suggestion" v-for="result of queryResults" :key="result.title" v-show="userQuery" @click="$emit('updateQuery', result.title)">
         <div class="swish-search-suggestion-title">
           <span class="swish-text-title">{{ result.title }}</span>
           <span class="swish-text-subtitle" v-if="result.subtitle">{{ result.subtitle }}</span>
@@ -44,7 +44,7 @@
     position: fixed;
     top: 80px;
     border: 1px solid #EFEFEF;
-    background-color: #FAFAFA;
+    background-color: rgba(250, 250, 250, 0.9);
     border-radius: 6px;
     width: 60%;
     box-shadow: 0px 2px 16px 8px rgba(100, 100, 100, 0.1);

@@ -21,6 +21,14 @@ function createWindow() {
     height: 600,
     useContentSize: true,
     width: 1000,
+    resizable: false,
+    frame: false,
+    fullscreenable: false,
+    vibrancy: 'light',
+    title: 'Swishbox',
+    webPreferences: {
+      experimentalFeatures: true
+    }
   });
 
   mainWindow.loadURL(winURL);
