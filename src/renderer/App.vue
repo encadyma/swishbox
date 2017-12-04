@@ -3,6 +3,7 @@
     <header-bar></header-bar>
     <div style="padding-top: 65px;"><router-view></router-view></div>
     <notifications group="player" position="bottom right"/>
+    <v-dialog/>
   </div>
 </template>
 
@@ -69,5 +70,8 @@
 
   .slip-fade-right-enter-active, .slip-fade-right-enter-active { transition: 300ms ease; }
   .slip-fade-right-enter, .slip-fade-right-leave-to { opacity: 0; transform: translate(20px); }
+
+  // FOR DIALOGS
+  .swish-dialog-error { font-weight: 600; color: #fa0000; }
 
 </style>

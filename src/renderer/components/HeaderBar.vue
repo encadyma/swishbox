@@ -5,16 +5,21 @@
       <i class="app-head-title material-icons" v-else @click="$router.push('/')" key="Back">arrow_back</i>
     </transition>
     <search-widget style="width: 50%; -webkit-app-region: no-drag;"></search-widget>
+    <div class="flack-spacing"></div>
+    <traffic-lights></traffic-lights>
   </header>
 </template>
 <script>
   import SearchWidget from './Header/SearchWidget';
+  import TrafficLights from './Header/TrafficLights';
+
   export default {
-    components: { SearchWidget },
+    components: { SearchWidget, TrafficLights },
   };
 </script>
 <style lang="scss">
   #app-header {
+    display: flex;
     background-color: rgba(250, 250, 250, 0.9);
     position: fixed;
     top: 0;
@@ -25,16 +30,19 @@
     min-height: 70px;
     -webkit-app-region: drag;
 
-    & > * { display: inline-block; vertical-align: middle; }
+    align-items: center;
+    justify-content: space-between;
 
     .app-head-title { 
       cursor: pointer;
       font-weight: 300;
-      margin-right: 10px;
+      margin: 0 10px;
       min-width: 80px;
       text-align: center;
 
       &.material-icons { font-size: 1.8em; }
     }
   }
+
+  .flack-spacing { width: 20%; }
 </style>
