@@ -28,8 +28,7 @@ function createWindow() {
     title: 'Swishbox',
     titleBarStyle: 'customButtonsOnHover',
     webPreferences: {
-      experimentalFeatures: true,
-      scrollBounce: true
+      experimentalFeatures: true
     }
   });
 
