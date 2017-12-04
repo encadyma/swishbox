@@ -5,7 +5,7 @@
       <i class="app-head-title material-icons" v-else @click="goBack()" key="Back">arrow_back</i>
     </transition>
     <search-widget style="width: 50%; -webkit-app-region: no-drag;"></search-widget>
-    <div class="flack-spacing"></div>
+    <now-playing-widget style="width: 25%;"></now-playing-widget>
     <traffic-lights @togglePlaylist="enablePlaylist = !enablePlaylist"></traffic-lights>
     <playlist-widget :isPlaylistToggled="enablePlaylist"></playlist-widget>
   </header>
@@ -14,12 +14,13 @@
   import SearchWidget from './Header/SearchWidget';
   import TrafficLights from './Header/TrafficLights';
   import PlaylistWidget from './Header/PlaylistWidget';
+  import NowPlayingWidget from './Header/NowPlayingWidget';
 
   export default {
     data: function () {
       return { enablePlaylist: false };
     },
-    components: { SearchWidget, TrafficLights, PlaylistWidget },
+    components: { SearchWidget, TrafficLights, PlaylistWidget, NowPlayingWidget },
     methods: {
       goBack: function () {
         if (this.$route.name === 'search-page') return this.$router.push('/');
@@ -57,6 +58,4 @@
       &.material-icons:hover { color: rgba(0, 0, 0, 0.8); }
     }
   }
-
-  .flack-spacing { width: 20%; }
 </style>

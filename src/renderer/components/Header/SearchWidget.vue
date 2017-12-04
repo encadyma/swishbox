@@ -1,14 +1,16 @@
 <template>
   <div id="app-search">
-    <input class="swish-omni" :placeholder="placeholder" v-model.trim="userQuery" @keyup.enter="submitQuery()" @focus="isFocused = true" @blur="isFocused = false"/>
+    <input class="swish-omni" :placeholder="placeholder" v-model.trim="userQuery" @keyup.enter="submitQuery()" @focus="isFocused = true" @blur="isFocused = false" v-focus="isFocused"/>
     <suggestion-widget :user-query="userQuery" :isFocused="isFocused" @updateQuery="updateQuery"></suggestion-widget>
   </div>
 </template>
 <script>
+  import { focus } from 'vue-focus';
   import SuggestionWidget from './SuggestionsWidget';
 
   export default {
     components: { SuggestionWidget },
+    directives: { focus: focus },
     data: () => ({
       isFocused: false,
       placeholder: 'Search for music...',
@@ -20,6 +22,7 @@
         this.submitQuery();
       },
       submitQuery: function () {
+        this.isFocused = false;
         if (this.userQuery) this.$router.push({ name: 'search-page', query: { q: this.userQuery } });
       }
     }
