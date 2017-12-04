@@ -2,7 +2,7 @@
   <div id="app">
     <header-bar></header-bar>
     <div id="app-overlay" :class="{ hidden: !$store.state.Interface.overlayEnabled }"></div>
-    <div style="padding-top: 65px;"><router-view></router-view></div>
+    <router-view></router-view>
     <notifications group="player" position="bottom right"/>
     <v-dialog/>
   </div>
@@ -45,6 +45,8 @@
 
     &.hidden { background-color: rgba(0, 0, 0, 0); visibility: hidden; transition: 300ms ease; }
   }
+
+  .container-push { padding-top: 65px; }
 
   .swish-head-betitle {
     font-size: 2.4em;

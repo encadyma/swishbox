@@ -26,8 +26,10 @@ function createWindow() {
     fullscreenable: false,
     vibrancy: 'light',
     title: 'Swishbox',
+    titleBarStyle: 'customButtonsOnHover',
     webPreferences: {
-      experimentalFeatures: true
+      experimentalFeatures: true,
+      scrollBounce: true
     }
   });
 

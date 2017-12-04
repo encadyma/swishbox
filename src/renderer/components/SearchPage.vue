@@ -1,5 +1,5 @@
 <template>
-  <div id="app-search-results">
+  <div id="app-search-results" class="container-push">
     <div id="app-search-results-head">
       <h1 class="swish-head-betitle" style="display: inline-block;">{{$route.query.q}}</h1>
       <span class="swish-text-subtitle">{{results.length}} results</span>
