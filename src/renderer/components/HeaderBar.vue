@@ -1,5 +1,5 @@
 <template>
-  <header id="app-header" :class="{ hidden: $store.state.Interface.hideHeader }">
+  <header id="app-header" :class="{ hidden: $store.state.Interface.hideHeader, compressed: shouldCompress }">
     <transition :name="($route.name === 'landing-page' ? 'slip-fade-left' : 'slip-fade-right')" mode="out-in">
       <h1 class="app-head-title" style="cursor: default;" v-if="$route.name === 'landing-page'" key="Swish">Swish</h1>
       <i class="app-head-title material-icons" v-else @click="goBack()" key="Back">arrow_back</i>
@@ -23,8 +23,14 @@
     components: { SearchWidget, TrafficLights, PlaylistWidget, NowPlayingWidget },
     methods: {
       goBack: function () {
+        document.body.scrollTop = 0;
         if (this.$route.name === 'search-page') return this.$router.push('/');
         return this.$router.go(-1);
+      }
+    },
+    computed: {
+      shouldCompress: function () {
+        return this.$store.state.compressHeader;
       }
     }
   };
@@ -59,6 +65,19 @@
 
       &.material-icons { font-size: 1.8em; color: rgba(0, 0, 0, 0.6); }
       &.material-icons:hover { color: rgba(0, 0, 0, 0.8); }
+    }
+
+    &.compressed {
+      .app-head-title {
+        font-size: 1.4em;
+      }
+      #app-search {
+        .swish-omni {
+          font-size: 0.75em;
+          padding: 6px 10px;
+          border-width: 3px;
+        }
+      }
     }
   }
 </style>

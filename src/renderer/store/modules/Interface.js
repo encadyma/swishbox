@@ -1,6 +1,7 @@
 const state = {
   overlayEnabled: false,
-  hideHeader: false
+  hideHeader: false,
+  compressHeader: false
 };
 
 const mutations = {

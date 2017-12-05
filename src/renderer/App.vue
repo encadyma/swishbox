@@ -13,7 +13,7 @@
 
   export default {
     name: 'swishbox',
-    components: { HeaderBar },
+    components: { HeaderBar }
   };
 </script>
 

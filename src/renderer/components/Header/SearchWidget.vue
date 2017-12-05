@@ -42,7 +42,7 @@
     }
   };
 </script>
-<style>
+<style lang="scss">
   .swish-omni {
     border: 0;
     background-color: #DFDFDF;
