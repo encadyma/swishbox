@@ -23,25 +23,21 @@
   </transition>
 </template>
 <script>
+  import API from '../../../api';
+
   export default {
     props: ['userQuery', 'isFocused'],
     data: () => ({
-      sampleQueryResults: [
-        { type: 'text', title: '', subtitle: 'Featured', helptext: 'You and many other users like this', genre: 'General' },
-        { type: 'text', title: ' music', subtitle: 'Featured', helptext: 'A general search term for keywords', genre: 'General' },
-        { type: 'text', title: ' playlist', helptext: 'Recommended for longer music excursions', genre: 'General' },
-        { type: 'text', title: ' remixes', genre: 'General' },
-        { type: 'text', title: ' for studying', genre: 'General' },
-        { type: 'text', title: ' video', genre: 'General' }
-      ]
+      loading: true,
+      queryResults: []
     }),
-    computed: {
-      queryResults: function () {
-        // Give false suggestions based on sample query results
-        return this.sampleQueryResults.map((r) => {
-          const res = { ...r };
-          res.title = this.userQuery + r.title;
-          return res;
+    watch: {
+      userQuery: function () {
+        // Give suggestions based on query results
+        this.loading = true;
+        API.getSearchSuggestions(this.userQuery).then((suggestions) => {
+          this.loading = false;
+          this.queryResults = suggestions;
         });
       }
     }

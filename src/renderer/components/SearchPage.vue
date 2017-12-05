@@ -2,39 +2,65 @@
   <div id="app-search-results" class="container-push">
     <div id="app-search-results-head">
       <h1 class="swish-head-betitle" style="display: inline-block;">{{$route.query.q}}</h1>
-      <span class="swish-text-subtitle">{{results.length}} results</span>
+      <span class="swish-text-subtitle" v-if="!loading && !error">{{results.length}} results</span>
     </div>
     <div id="app-search-results-body">
-      <div v-for="result of results" :key="result.id" style="margin: 5px 0;" @click="addSongToPlaylist(result)">
-        <search-result :result="result"></search-result>
+      <div class="swish-bubble-error" v-if="error">
+        <p><b>An error occurred.</b> Unfortunately, it looks like something has gone wrong. This may be because of
+        a poor network connection or a server error on our side. Try using the search tool on a different term to see if this error occurs again.</p>
+        <p>If this error persists, please make full note of the situation and file a Github Issue in this project's repository <u style="cursor: pointer;" @click="$electron.shell.openExternal('https://github.com/encadyma/swishbox/issues')">here</u>.</p>
+        <p>Last Error Log: <pre class="fulllog">{{lastError}}</pre></p>
+      </div>
+      <div v-if="!error">
+        <div v-for="result of results" :key="result.id" style="margin: 5px 0;" @click="addSongToPlaylist(result)">
+          <search-result :result="result" :loading="loading"></search-result>
+        </div>
       </div>
     </div>
+    
   </div>
 </template>
 
 <script>
+  import API from '../../api';
   import SearchResult from './Search/SearchResult';
 
   export default {
     components: { SearchResult },
     data: function () {
       return {
-        results: [
-          { id: 'LfephiFN76E', title: '[MV] REOL - No title', description: 'Music&Lyrics,Vocal : Reol\nTrack&Chorus : Giga\nMovie&Chorus : Okiku', author: { name: 'REOL Official', id: 'UCB6pJFaFByws3dQj4AdLdyA' }, views: 17347735 },
-          { id: 'G_QsSS4DwoY', title: '☆東方 Piano / Instrumental☆ 東方妖怪小町 [logical emotion]', description: '☆ Title: 東方妖怪小町 ☆ Original song: 東方妖怪小町 / Eastern Youkai Beauty ☆ Piano: marasy ☆ Bass: drm ☆ Drums: tabclear ☆ Circle: logical emotion ☆ Album: Touhou Project pops arranged instruments2 ☆ Event: 例大祭9 / Reitaisai 9 ☆ Illustration link: http://www.pixiv.net/member_illust.ph...', author: { name: 'The Doughnut-Loving Vampire', id: 'UCg9gCVVsXqOh7iQoHI0ZeUA' }, views: 7210 },
-          { id: 'Kkgp1-fHn6Y', title: 'Tatsh - "IMAGE -MATERIAL- (Version 0)"', description: '老科最近發行一個作曲家Tatsh專輯 裡面的曲子都很好聽 尤其是這首"IMAGE -MATERIAL- (Version 0)" 我非常的愛 曲風非常搖滾,中間緩歇處還可以聽到柔柔的小提琴聲 和搖滾搭配起來還蠻另類的 專輯封面還是敘事詩大師MAYA的手繪稿 MAYA大師最愛慣用畫法"圖地反轉"的畫風~非常的適合收藏 好久沒用Premiere製作編輯影片了.....稍稍修圖後~嘿嘿! 沒事無聊~把文字也跟了音樂節奏對拍~哈 (發現youtube上傳後變成沒對拍....) 一起欣賞這個好作品吧!!', author: { name: 'Trance5368', id: 'UC5V26sPlYa581ZHbQQ-y8rg' }, views: 1009624 }
-        ]
+        loading: true,
+        results: API.sampleVideos,
+        error: false,
+        lastError: null
       };
     },
     methods: {
       addSongToPlaylist: function (song) {
+        if (this.loading) return;
         this.$store.dispatch('PLAYLIST_ADD_SONG', song);
         this.$notify({
           group: 'player',
           title: `${song.title}`,
           text: 'has been added to the playlist.'
         });
+      },
+      loadSearch: function () {
+        this.loading = true;
+        this.error = false;
+        API.getVideosWithQuery(this.$route.query.q).then((results) => {
+          this.results = results;
+          this.loading = false;
+        }).catch((err) => {
+          this.error = true;
+          this.lastError = err;
+          this.loading = false;
+        });
       }
+    },
+    mounted: function () {
+      this.loadSearch();
+      this.$watch('$route.query.q', this.loadSearch);
     }
   };
 </script>
