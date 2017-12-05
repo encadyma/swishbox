@@ -50,5 +50,19 @@
     border-radius: 6px;
     font-size: 1.2em;
     width: 100%;
+    outline: none;
+    border: 4px solid rgba(0, 0, 200, 0);
+    transition: 200ms ease;
+  }
+  .swish-omni:focus {
+    animation: input-focus 200ms ease-out;
+    box-shadow: 0 0 16px 0 rgba(40, 0, 200, 0.2);
+    border-color: rgba(40, 0, 200, 0.2);
+    transition: 200ms ease;
+  }
+
+  @keyframes input-focus {
+    0% { box-shadow: 0 0 32px 24px rgba(40, 0, 200, 0); }
+    100% { box-shadow: 0 0 16px 0 rgba(40, 0, 200, 0.2); }
   }
 </style>
