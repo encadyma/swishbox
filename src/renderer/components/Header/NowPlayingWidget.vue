@@ -30,9 +30,12 @@ export default {
     setInterval(() => {
       this.frame += 1;
       this.updateCanvas();
+      if (this.isPlaying) this.currentDuration += 0.1;
     }, 100);
 
     this.$watch('$store.state.Playlist.currentPosition', function () {
+      this.currentDuration = 0;
+      this.isPlaying = false;
       this.frame = 0;
     });
 
@@ -67,19 +70,19 @@ export default {
         this.currentPosition !== -1 ? 70 : 50);
 
       if (this.isLoading) {
-        this.drawLoading(this.currentProgress);
+        this.drawLoading(this.currentProgress, `${this.currentDownloadSpeed}kbps`);
       } else {
         this.drawPlayingAnimation();
       }
     },
-    drawLoading: function (progress) {
+    drawLoading: function (progress, helpText) {
       progress = (progress >= 100 ? 100 : progress);
       this.ctx.fillRect(10, 14, 4.6 * progress, 24);
 
       this.ctx.globalCompositeOperation = 'color-dodge';
       this.ctx.textAlign = 'center';
       this.ctx.font = '18px Source Sans Pro';
-      this.ctx.fillText(`${Math.round(progress)}%`, 240, 32);
+      this.ctx.fillText(`${Math.round(progress)}%${helpText ? ` (${helpText})` : ''}`, 240, 32);
       this.resetSettings();
     },
     drawPlayingAnimation: function () {
@@ -93,10 +96,15 @@ export default {
       this.ctx.textAlign = 'right';
       this.ctx.fillText(endDur, 460, 28);
 
-      const totalLen = (420 - this.ctx.measureText(endDur).width) - this.ctx.measureText(startDur).width;
+      const totalLen = (400 - this.ctx.measureText(endDur).width) - this.ctx.measureText(startDur).width;
 
       this.ctx.fillStyle = '#DDDDDD';
-      this.ctx.fillRect(30 + this.ctx.measureText(startDur).width, 20, totalLen, 4);
+      this.ctx.fillRect(40 + this.ctx.measureText(startDur).width, 20, totalLen, 4);
+
+      const playedLen = (this.currentDuration * totalLen) / this.currentSong.duration;
+
+      this.ctx.fillStyle = '#BBBBBB';
+      this.ctx.fillRect(40 + this.ctx.measureText(startDur).width, 20, playedLen <= totalLen ? playedLen : totalLen, 4);
 
       this.resetSettings();
     },
@@ -108,6 +116,8 @@ export default {
     },
     genStrDuration: function (duration) {
       let dur = [];
+
+      duration = Math.round(duration);
 
       // Add hours only if necessary
       if (duration >= 3600) {
@@ -143,6 +153,10 @@ export default {
     currentProgress: function () {
       if (this.currentPosition === -1) return 0;
       return this.currentQueue[this.currentPlaylist[this.currentPosition].id].loading;
+    },
+    currentDownloadSpeed: function () {
+      if (!this.isLoading) return 0;
+      return this.currentQueue[this.currentPlaylist[this.currentPosition].id].dlSpeed;
     }
   }
 };

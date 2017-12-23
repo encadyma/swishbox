@@ -11,8 +11,10 @@ const mutations = {
     state.playlist.push(song);
     Vue.set(state.masterQueue, song.id, {
       loading: 0,
+      dlSpeed: 0,
       canPlay: false,
-      hasFinished: false
+      hasFinished: false,
+      path: null
     });
   },
   PLAYLIST_MUT_CLEAR_PLAYLIST(state) {
@@ -24,8 +26,10 @@ const mutations = {
   PLAYLIST_MUT_UPDATE_SONG_PROGRESS(state, progressObj) {
     Vue.set(state.masterQueue, progressObj.id, {
       loading: progressObj.progress,
+      dlSpeed: progressObj.dlSpeed,
       canPlay: progressObj.canPlay,
-      hasFinished: progressObj.hasFinished
+      hasFinished: progressObj.hasFinished,
+      path: progressObj.path
     });
   }
 };

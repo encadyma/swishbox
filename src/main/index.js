@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron' // eslint-disable-line
 import fs from 'fs';
 import path from 'path';
 import ytdl from 'ytdl-core';
+import ffmpeg from 'fluent-ffmpeg';
 
 /**
  * Set `__static` path to static files in production
@@ -68,27 +69,47 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
   if (!fs.existsSync(path.join(app.getPath('userData'), 'yt_cache'))) fs.mkdirSync(path.join(app.getPath('userData'), 'yt_cache'));
   if (!ytdl.validateID(yt)) return;
 
-  const video = ytdl(`https://www.youtube.com/watch?v=${yt}`);
-  video.pipe(fs.createWriteStream(path.join(app.getPath('userData'), 'yt_cache', `${yt}.mp3`)), {
-    filter: 'audioonly'
+  const video = ytdl(`https://www.youtube.com/watch?v=${yt}`, { filter: format => format.container === 'mp4' });
+  const videoDir = path.join(app.getPath('userData'), 'yt_cache');
+
+  let progressPercent = 0;
+
+  video.on('info', () => {
+    const videoProc = ffmpeg({ source: video })
+      .format('mp3')
+      .output(path.join(videoDir, `${yt}.mp3`));
+
+    videoProc.on('progress', (progress) => {
+      event.sender.send('YT_DOWNLOAD_PROGRESS', {
+        id: yt,
+        dlSpeed: progress.currentKbps,
+        progress: progressPercent,
+        canPlay: false,
+        hasFinished: false,
+        path: path.join(videoDir, `${yt}.mp3`)
+      });
+    });
+
+    videoProc.on('end', () => {
+      event.sender.send('YT_DOWNLOAD_PROGRESS', {
+        id: yt,
+        dlSpeed: 0,
+        progress: 100,
+        canPlay: true,
+        hasFinished: true,
+        path: path.join(videoDir, `${yt}.mp3`)
+      });
+    });
+
+    videoProc.run();
+
+    /* video.pipe(fs.createWriteStream(path.join(videoDir, `${yt}.${format.container}`)), {
+      filter: 'audioonly'
+    }); */
   });
 
-  video.on('progress', (chunkNum, downloaded, total) => {
-    event.sender.send('YT_DOWNLOAD_PROGRESS', {
-      id: yt,
-      progress: (downloaded / total) * 100,
-      canPlay: (downloaded / total) > 0.1,
-      hasFinished: false
-    });
-  });
-
-  video.on('end', () => {
-    event.sender.send('YT_DOWNLOAD_PROGRESS', {
-      id: yt,
-      progress: 100,
-      canPlay: true,
-      hasFinished: true
-    });
+  video.on('progress', (chunkLength, downloaded, total) => {
+    progressPercent = (downloaded / total) * 100;
   });
 });
 
