@@ -39,6 +39,8 @@
       addSongToPlaylist: function (song) {
         if (this.loading) return;
         this.$store.dispatch('PLAYLIST_ADD_SONG', song);
+        // this.goToVideo(song.id);
+        this.$electron.ipcRenderer.send('YT_DOWNLOAD', song.id);
         this.$notify({
           group: 'player',
           title: `${song.title}`,
@@ -56,6 +58,9 @@
           this.lastError = err;
           this.loading = false;
         });
+      },
+      goToVideo: function (videoId) {
+        this.$router.push({ name: 'video-page', query: { video: videoId } });
       }
     },
     mounted: function () {

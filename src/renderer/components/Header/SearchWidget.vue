@@ -37,7 +37,7 @@
     mounted: function () {
       // Clear out the search query when navigating to the home page
       this.$watch('$route.name', function (newVal, oldVal) {
-        if (oldVal !== newVal && newVal === 'landing-page') this.userQuery = '';
+        if (oldVal !== newVal && newVal === 'home-page') this.userQuery = '';
       });
     }
   };

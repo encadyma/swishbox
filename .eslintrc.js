@@ -26,6 +26,7 @@ module.exports = {
     'comma-dangle': 0,
     'object-shorthand': 0,
     'func-names': 0,
+    'max-len': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

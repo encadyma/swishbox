@@ -1,6 +1,8 @@
 <template>
   <div class="swish-search-result" :class="{ isLoading: loading }">
-    <div class="swish-search-result-cover" :style="{ backgroundImage: `url(${result.thumbnails.medium.url})` }"></div>
+    <div class="swish-search-result-cover" :style="{ backgroundImage: `url(${result.thumbnails.medium.url})` }">
+      <div class="swish-search-result-duration">{{strDuration}}</div>
+    </div>
     <div class="swish-search-result-text">
       <h3>{{result.title}}</h3>
       <div class="swish-search-subtitle swish-text-subtitle"><span>{{result.author.name}}</span><span>{{truncPlays}} plays</span></div>
@@ -22,6 +24,21 @@
         else if (Math.floor(level) >= 6) return `${Math.trunc(this.result.views / 1000000)}M`;
         else if (Math.floor(level) >= 3) return `${Math.trunc(this.result.views / 1000)}K`;
         return `${this.result.views}`;
+      },
+      strDuration: function () {
+        let dur = [];
+
+        // Add hours only if necessary
+        if (this.result.duration >= 3600) {
+          dur.push(Math.trunc(this.result.duration / 3600).toString());
+        }
+
+        dur.push(`${this.result.duration ? '00' : ''}${Math.trunc((this.result.duration % 3600) / 60)}`);
+        dur.push(`00${this.result.duration % 60}`);
+
+        dur = dur.map(str => str.substr(-2, 2));
+
+        return dur.join(':');
       }
     }
   };
@@ -55,6 +72,7 @@
       content: 'play_arrow';
       font-family: 'Material Icons';
       position: absolute;
+      top: 0;
       width: 100%;
       height: 100%;
       background-color: rgba(200, 200, 200, 0);
@@ -64,6 +82,19 @@
       font-weight: 700;
       font-size: 48px;
       padding: 20px 0;
+    }
+
+    & .swish-search-result-duration {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 2px;
+      color: rgba(250, 250, 250, 1);
+      background-color: rgba(0, 0, 0, 0.6);
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
     }
   }
 
@@ -90,6 +121,7 @@
       border: none;
 
       &:after, &:before { display: none; }
+      .swish-search-result-duration { visibility: hidden; }
     }
     .swish-search-result-text {
       h3 { 

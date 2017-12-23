@@ -1,11 +1,19 @@
+import Vue from 'vue';
+
 const state = {
   playlist: [],
   currentPosition: -1,
+  masterQueue: {}
 };
 
 const mutations = {
   PLAYLIST_MUT_ADD_SONG(state, song) {
     state.playlist.push(song);
+    Vue.set(state.masterQueue, song.id, {
+      loading: 0,
+      canPlay: false,
+      hasFinished: false
+    });
   },
   PLAYLIST_MUT_CLEAR_PLAYLIST(state) {
     state.playlist = [];
@@ -13,6 +21,13 @@ const mutations = {
   PLAYLIST_MUT_SET_CURRENT_POSITION(state, position) {
     state.currentPosition = position;
   },
+  PLAYLIST_MUT_UPDATE_SONG_PROGRESS(state, progressObj) {
+    Vue.set(state.masterQueue, progressObj.id, {
+      loading: progressObj.progress,
+      canPlay: progressObj.canPlay,
+      hasFinished: progressObj.hasFinished
+    });
+  }
 };
 
 const actions = {

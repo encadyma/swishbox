@@ -96,6 +96,7 @@
     font-size: 0.8em;
     padding: 8px 12px;
     max-width: 700px;
+    overflow: scroll;
 
     p {
       margin: 6px 0;

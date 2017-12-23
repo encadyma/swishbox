@@ -1,4 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron' // eslint-disable-line
+import fs from 'fs';
+import path from 'path';
+import ytdl from 'ytdl-core';
 
 /**
  * Set `__static` path to static files in production
@@ -59,6 +62,34 @@ ipcMain.on('APP_MINIMIZE', () => {
 
 ipcMain.on('APP_CLOSE', () => {
   app.quit();
+});
+
+ipcMain.on('YT_DOWNLOAD', (event, yt) => {
+  if (!fs.existsSync(path.join(app.getPath('userData'), 'yt_cache'))) fs.mkdirSync(path.join(app.getPath('userData'), 'yt_cache'));
+  if (!ytdl.validateID(yt)) return;
+
+  const video = ytdl(`https://www.youtube.com/watch?v=${yt}`);
+  video.pipe(fs.createWriteStream(path.join(app.getPath('userData'), 'yt_cache', `${yt}.mp3`)), {
+    filter: 'audioonly'
+  });
+
+  video.on('progress', (chunkNum, downloaded, total) => {
+    event.sender.send('YT_DOWNLOAD_PROGRESS', {
+      id: yt,
+      progress: (downloaded / total) * 100,
+      canPlay: (downloaded / total) > 0.1,
+      hasFinished: false
+    });
+  });
+
+  video.on('end', () => {
+    event.sender.send('YT_DOWNLOAD_PROGRESS', {
+      id: yt,
+      progress: 100,
+      canPlay: true,
+      hasFinished: true
+    });
+  });
 });
 
 /**

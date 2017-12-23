@@ -1,7 +1,7 @@
 <template>
   <header id="app-header" :class="{ hidden: $store.state.Interface.hideHeader, compressed: shouldCompress }">
-    <transition :name="($route.name === 'landing-page' ? 'slip-fade-left' : 'slip-fade-right')" mode="out-in">
-      <h1 class="app-head-title" style="cursor: default;" v-if="$route.name === 'landing-page'" key="Swish">Swish</h1>
+    <transition :name="($route.name === 'home-page' ? 'slip-fade-left' : 'slip-fade-right')" mode="out-in">
+      <h1 class="app-head-title" style="cursor: default;" v-if="$route.name === 'home-page'" key="Swish">Swish</h1>
       <i class="app-head-title material-icons" v-else @click="goBack()" key="Back">arrow_back</i>
     </transition>
     <search-widget style="width: 50%; -webkit-app-region: no-drag;" :class="{ disabled: $store.state.Interface.hideHeader }"></search-widget>

@@ -6,14 +6,19 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
+      path: '/video',
+      name: 'video-page',
+      component: require('@/components/VideoPlayer').default
+    },
+    {
       path: '/search',
       name: 'search-page',
       component: require('@/components/SearchPage').default
     },
     {
       path: '/',
-      name: 'landing-page',
-      component: require('@/components/LandingPage').default,
+      name: 'home-page',
+      component: require('@/components/HomePage').default,
     },
     {
       path: '*',
