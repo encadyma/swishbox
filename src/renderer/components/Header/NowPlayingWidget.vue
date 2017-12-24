@@ -47,7 +47,7 @@ export default {
           }
         }
 
-        if (this.isPlaying) this.currentDuration += 0.1;
+        if (this.isPlaying && this.currentSongAudio !== null) this.currentDuration = this.currentSongAudio.currentTime;
       }
     }, 100);
 
@@ -55,11 +55,7 @@ export default {
     // reset to start at beginning.
     this.$watch('$store.state.Playlist.currentPosition', function () {
       this.stopPlay();
-      URL.revokeObjectURL(this.currentObjectAudio);
-      this.currentDuration = 0;
-      this.currentSongAudio = null;
-      this.currentSongSource = null;
-      this.currentObjectAudio = null;
+      this.resetAudio();
       this.frame = 0;
       this.startPlay();
     });
@@ -76,10 +72,13 @@ export default {
       this.$store.commit('PLAYLIST_MUT_UPDATE_SONG_PROGRESS', progressObj);
     });
   },
+  beforeDestroy: function () {
+    this.audioContext.close();
+  },
   methods: {
     startPlay: function () {
       this.loadSong().then((response) => {
-        this.currentSongAudio.play();
+        if (response) this.currentSongAudio.play();
         this.isPlaying = response;
       });
     },
@@ -89,6 +88,13 @@ export default {
       this.isPlaying = false;
       return true;
     },
+    resetAudio: function () {
+      if (this.currentObjectAudio) URL.revokeObjectURL(this.currentObjectAudio);
+      this.currentDuration = 0;
+      this.currentSongAudio = null;
+      this.currentSongSource = null;
+      this.currentObjectAudio = null;
+    },
     loadSong: function () {
       if (this.currentSongSource !== null) return Promise.resolve(true);
       if (this.currentPosition === -1) return Promise.resolve(false);
@@ -97,21 +103,22 @@ export default {
       const fileSystem = this.$electron.remote.require('fs');
 
       return new Promise((resolve) => {
-        const b = fileSystem.readFileSync(this.currentSongInQueue.path);
-        const ab = b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
+        fileSystem.readFile(this.currentSongInQueue.path, (err, b) => {
+          const ab = b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
 
-        const blob = new Blob([ab]);
-        this.currentObjectAudio = URL.createObjectURL(blob);
+          const blob = new Blob([ab]);
+          this.currentObjectAudio = URL.createObjectURL(blob);
 
-        this.currentSongAudio = new Audio(this.currentObjectAudio);
-        this.currentSongAudio.controls = true;
-        this.currentSongAudio.autoplay = false;
-        this.currentSongAudio.loop = false;
+          this.currentSongAudio = new Audio(this.currentObjectAudio);
+          this.currentSongAudio.controls = true;
+          this.currentSongAudio.autoplay = false;
+          this.currentSongAudio.loop = false;
 
-        this.currentSongSource = this.audioContext.createMediaElementSource(this.currentSongAudio);
+          this.currentSongSource = this.audioContext.createMediaElementSource(this.currentSongAudio);
 
-        this.currentSongSource.connect(this.audioContext.destination);
-        resolve(true);
+          this.currentSongSource.connect(this.audioContext.destination);
+          resolve(true);
+        });
       });
     },
     sendPlaylistBackwards: function () {
@@ -226,6 +233,7 @@ export default {
       return this.$store.state.Playlist.masterQueue;
     },
     currentSongInQueue: function () {
+      if (this.currentPosition === -1) return undefined;
       return this.currentQueue[this.currentPlaylist[this.currentPosition].id];
     },
     currentProgress: function () {
