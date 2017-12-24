@@ -22,8 +22,9 @@ export default {
       isPlaying: false,
       currentDuration: 0,
       audioContext: null,
-      currentSongBuffer: null,
-      currentSongSource: null
+      currentSongSource: null,
+      currentSongAudio: null,
+      currentObjectAudio: null
     };
   },
   mounted: function () {
@@ -34,6 +35,7 @@ export default {
     this.canvas = this.$refs.appHeadCanvas;
     this.ctx = this.canvas.getContext('2d');
 
+    // Frame update code
     setInterval(() => {
       this.frame += 1;
       this.updateCanvas();
@@ -49,12 +51,17 @@ export default {
       }
     }, 100);
 
+    // When the user switches positions in the playlist,
+    // reset to start at beginning.
     this.$watch('$store.state.Playlist.currentPosition', function () {
-      this.currentDuration = 0;
-      this.currentSongBuffer = null;
-      this.currentSongSource = null;
-      this.frame = 0;
       this.stopPlay();
+      URL.revokeObjectURL(this.currentObjectAudio);
+      this.currentDuration = 0;
+      this.currentSongAudio = null;
+      this.currentSongSource = null;
+      this.currentObjectAudio = null;
+      this.frame = 0;
+      this.startPlay();
     });
 
     // Watch for when to load + play the song
@@ -71,38 +78,40 @@ export default {
   },
   methods: {
     startPlay: function () {
-      if (this.isLoading) {
-        alert('Cannot play this song now.');
-        return;
-      }
       this.loadSong().then((response) => {
-        if (!response) return;
-        this.isPlaying = true;
+        this.currentSongAudio.play();
+        this.isPlaying = response;
       });
     },
     stopPlay: function () {
-      if (this.currentSongBuffer === null || this.currentSongSource === null) return false;
-      this.currentSongSource.stop();
+      if (this.currentSongSource === null) return false;
+      this.currentSongAudio.pause();
       this.isPlaying = false;
       return true;
     },
     loadSong: function () {
-      if (this.currentSongBuffer !== null && this.currentSongSource !== null) return Promise.resolve(true);
+      if (this.currentSongSource !== null) return Promise.resolve(true);
       if (this.currentPosition === -1) return Promise.resolve(false);
+      if (this.isLoading) return Promise.resolve(false);
+
+      const fileSystem = this.$electron.remote.require('fs');
 
       return new Promise((resolve) => {
-        const fileSystem = this.$electron.remote.require('fs');
         const b = fileSystem.readFileSync(this.currentSongInQueue.path);
+        const ab = b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
 
-        this.currentSongBuffer = b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
+        const blob = new Blob([ab]);
+        this.currentObjectAudio = URL.createObjectURL(blob);
 
-        this.audioContext.decodeAudioData(this.currentSongBuffer).then(() => {
-          this.currentSongSource = this.audioContext.createBufferSource();
-          this.currentSongSource.buffer = this.currentSongBuffer;
-          this.currentSongSource.connect(this.audioContext.destination);
-          this.currentSongSource.start(0);
-          resolve(true);
-        });
+        this.currentSongAudio = new Audio(this.currentObjectAudio);
+        this.currentSongAudio.controls = true;
+        this.currentSongAudio.autoplay = false;
+        this.currentSongAudio.loop = false;
+
+        this.currentSongSource = this.audioContext.createMediaElementSource(this.currentSongAudio);
+
+        this.currentSongSource.connect(this.audioContext.destination);
+        resolve(true);
       });
     },
     sendPlaylistBackwards: function () {
