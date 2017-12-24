@@ -22,6 +22,14 @@
   @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700');
   @import './assets/material-icons.scss';
 
+  ::selection {
+    background: transparent;
+  }
+
+  input::selection {
+    background: rgba(40, 0, 200, 0.2);
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;

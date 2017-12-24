@@ -32,7 +32,8 @@ function createWindow() {
     title: 'Swishbox',
     titleBarStyle: 'customButtonsOnHover',
     webPreferences: {
-      experimentalFeatures: true
+      experimentalFeatures: true,
+      backgroundThrottling: false
     }
   });
 
@@ -69,8 +70,21 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
   if (!fs.existsSync(path.join(app.getPath('userData'), 'yt_cache'))) fs.mkdirSync(path.join(app.getPath('userData'), 'yt_cache'));
   if (!ytdl.validateID(yt)) return;
 
-  const video = ytdl(`https://www.youtube.com/watch?v=${yt}`, { filter: format => format.container === 'mp4' });
   const videoDir = path.join(app.getPath('userData'), 'yt_cache');
+
+  if (fs.existsSync(path.join(videoDir, `${yt}.mp3`))) {
+    event.sender.send('YT_DOWNLOAD_PROGRESS', {
+      id: yt,
+      dlSpeed: 0,
+      loading: 100,
+      canPlay: true,
+      hasFinished: true,
+      path: path.join(videoDir, `${yt}.mp3`)
+    });
+    return;
+  }
+
+  const video = ytdl(`https://www.youtube.com/watch?v=${yt}`, { filter: format => format.container === 'mp4' });
 
   let progressPercent = 0;
 
@@ -83,7 +97,7 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
       event.sender.send('YT_DOWNLOAD_PROGRESS', {
         id: yt,
         dlSpeed: progress.currentKbps,
-        progress: progressPercent,
+        loading: progressPercent,
         canPlay: false,
         hasFinished: false,
         path: path.join(videoDir, `${yt}.mp3`)
@@ -94,7 +108,7 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
       event.sender.send('YT_DOWNLOAD_PROGRESS', {
         id: yt,
         dlSpeed: 0,
-        progress: 100,
+        loading: 100,
         canPlay: true,
         hasFinished: true,
         path: path.join(videoDir, `${yt}.mp3`)
@@ -112,6 +126,7 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
     progressPercent = (downloaded / total) * 100;
   });
 });
+
 
 /**
  * Auto Updater

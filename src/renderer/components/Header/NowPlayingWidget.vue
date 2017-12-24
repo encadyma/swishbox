@@ -4,8 +4,8 @@
     <div id="app-head-now-playing-overlay" v-if="currentPosition !== -1">
       <div style="margin: 0 auto; text-align: center;">
         <i class="material-icons swish-mi-sec" @click="sendPlaylistBackwards" :class="{disabled: currentPosition === 0}">skip_previous</i>
-        <i class="material-icons swish-mi-prime" v-if="!isPlaying" @click="togglePlay()">play_arrow</i>
-        <i class="material-icons swish-mi-prime" v-if="isPlaying" @click="togglePlay()">pause</i>
+        <i class="material-icons swish-mi-prime" v-if="!isPlaying" @click="startPlay()">play_arrow</i>
+        <i class="material-icons swish-mi-prime" v-if="isPlaying" @click="stopPlay()">pause</i>
         <i class="material-icons swish-mi-sec" @click="sendPlaylistForwards" :class="{disabled: currentPosition === currentPlaylist.length - 1}">skip_next</i>
       </div>
     </div>
@@ -20,23 +20,49 @@ export default {
       canvas: null,
       ctx: null,
       isPlaying: false,
-      currentDuration: 0
+      currentDuration: 0,
+      audioContext: null,
+      currentSongBuffer: null,
+      currentSongSource: null
     };
   },
   mounted: function () {
+    // Initialize audio context
+    const WindowAudioContext = window.AudioContext || window.webkitAudioContext;
+    this.audioContext = new WindowAudioContext();
+
     this.canvas = this.$refs.appHeadCanvas;
     this.ctx = this.canvas.getContext('2d');
 
     setInterval(() => {
       this.frame += 1;
       this.updateCanvas();
-      if (this.isPlaying) this.currentDuration += 0.1;
+      if (this.currentPosition !== -1) {
+        if (this.currentDuration >= this.currentSong.duration) {
+          if (!this.sendPlaylistForwards()) {
+            this.stopPlay();
+            this.currentDuration = 0;
+          }
+        }
+
+        if (this.isPlaying) this.currentDuration += 0.1;
+      }
     }, 100);
 
     this.$watch('$store.state.Playlist.currentPosition', function () {
       this.currentDuration = 0;
-      this.isPlaying = false;
+      this.currentSongBuffer = null;
+      this.currentSongSource = null;
       this.frame = 0;
+      this.stopPlay();
+    });
+
+    // Watch for when to load + play the song
+    this.$watch('currentSongInQueue', function (newVal, oldVal) {
+      if (oldVal === undefined || newVal === undefined) return;
+      if (oldVal.id === newVal.id && newVal.canPlay && !oldVal.canPlay) {
+        this.startPlay();
+      }
     });
 
     this.$electron.ipcRenderer.on('YT_DOWNLOAD_PROGRESS', (event, progressObj) => {
@@ -44,14 +70,52 @@ export default {
     });
   },
   methods: {
-    togglePlay: function () {
-      this.isPlaying = !this.isPlaying;
+    startPlay: function () {
+      if (this.isLoading) {
+        alert('Cannot play this song now.');
+        return;
+      }
+      this.loadSong().then((response) => {
+        if (!response) return;
+        this.isPlaying = true;
+      });
+    },
+    stopPlay: function () {
+      if (this.currentSongBuffer === null || this.currentSongSource === null) return false;
+      this.currentSongSource.stop();
+      this.isPlaying = false;
+      return true;
+    },
+    loadSong: function () {
+      if (this.currentSongBuffer !== null && this.currentSongSource !== null) return Promise.resolve(true);
+      if (this.currentPosition === -1) return Promise.resolve(false);
+
+      return new Promise((resolve) => {
+        const fileSystem = this.$electron.remote.require('fs');
+        const b = fileSystem.readFileSync(this.currentSongInQueue.path);
+
+        this.currentSongBuffer = b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
+
+        this.audioContext.decodeAudioData(this.currentSongBuffer).then(() => {
+          this.currentSongSource = this.audioContext.createBufferSource();
+          this.currentSongSource.buffer = this.currentSongBuffer;
+          this.currentSongSource.connect(this.audioContext.destination);
+          this.currentSongSource.start(0);
+          resolve(true);
+        });
+      });
     },
     sendPlaylistBackwards: function () {
-      if (this.currentPosition !== 0) this.$store.dispatch('PLAYLIST_CHANGE_SONG', this.currentPosition - 1);
+      if (this.currentPosition === 0) return false;
+      this.$store.dispatch('PLAYLIST_CHANGE_SONG', this.currentPosition - 1);
+      this.startPlay();
+      return true;
     },
     sendPlaylistForwards: function () {
-      if (this.currentPosition !== this.currentPlaylist.length - 1) this.$store.dispatch('PLAYLIST_CHANGE_SONG', this.currentPosition + 1);
+      if (this.currentPosition === this.currentPlaylist.length - 1) return false;
+      this.$store.dispatch('PLAYLIST_CHANGE_SONG', this.currentPosition + 1);
+      this.startPlay();
+      return true;
     },
     updateCanvas: function () {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -71,10 +135,11 @@ export default {
 
       if (this.isLoading) {
         this.drawLoading(this.currentProgress, `${this.currentDownloadSpeed}kbps`);
-      } else {
+      } else if (this.currentPosition !== -1) {
         this.drawPlayingAnimation();
       }
     },
+    // Drawing the loading bars for download progress
     drawLoading: function (progress, helpText) {
       progress = (progress >= 100 ? 100 : progress);
       this.ctx.fillRect(10, 14, 4.6 * progress, 24);
@@ -85,6 +150,7 @@ export default {
       this.ctx.fillText(`${Math.round(progress)}%${helpText ? ` (${helpText})` : ''}`, 240, 32);
       this.resetSettings();
     },
+    // Drawing the song playing bar
     drawPlayingAnimation: function () {
       const startDur = this.genStrDuration(this.currentDuration);
       const endDur = this.genStrDuration(this.currentSong.duration);
@@ -149,6 +215,9 @@ export default {
     },
     currentQueue: function () {
       return this.$store.state.Playlist.masterQueue;
+    },
+    currentSongInQueue: function () {
+      return this.currentQueue[this.currentPlaylist[this.currentPosition].id];
     },
     currentProgress: function () {
       if (this.currentPosition === -1) return 0;
