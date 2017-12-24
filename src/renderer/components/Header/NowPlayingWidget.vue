@@ -39,15 +39,15 @@ export default {
     setInterval(() => {
       this.frame += 1;
       this.updateCanvas();
-      if (this.currentPosition !== -1) {
-        if (this.currentDuration >= this.currentSong.duration) {
+      if (this.currentPosition !== -1 && this.currentSongAudio !== null) {
+        if (this.currentDuration >= this.currentSong.duration || this.currentSongAudio.ended) {
           if (!this.sendPlaylistForwards()) {
             this.stopPlay();
             this.currentDuration = 0;
           }
         }
 
-        if (this.isPlaying && this.currentSongAudio !== null) this.currentDuration = this.currentSongAudio.currentTime;
+        if (this.isPlaying) this.currentDuration = this.currentSongAudio.currentTime;
       }
     }, 100);
 
