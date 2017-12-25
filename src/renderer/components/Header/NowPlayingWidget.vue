@@ -20,6 +20,7 @@ export default {
       canvas: null,
       ctx: null,
       isPlaying: false,
+      hasError: null,
       currentDuration: 0,
       audioContext: null,
       currentSongSource: null,
@@ -94,6 +95,7 @@ export default {
       this.currentSongAudio = null;
       this.currentSongSource = null;
       this.currentObjectAudio = null;
+      this.hasError = null;
     },
     loadSong: function () {
       if (this.currentSongSource !== null) return Promise.resolve(true);
@@ -104,6 +106,13 @@ export default {
 
       return new Promise((resolve) => {
         fileSystem.readFile(this.currentSongInQueue.path, (err, b) => {
+          if (err) {
+            this.hasError = err;
+            return;
+          }
+
+          this.hasError = null;
+
           const ab = b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength);
 
           const blob = new Blob([ab]);
@@ -123,12 +132,14 @@ export default {
     },
     sendPlaylistBackwards: function () {
       if (this.currentPosition === 0) return false;
+      this.stopPlay();
       this.$store.dispatch('PLAYLIST_CHANGE_SONG', this.currentPosition - 1);
       this.startPlay();
       return true;
     },
     sendPlaylistForwards: function () {
       if (this.currentPosition === this.currentPlaylist.length - 1) return false;
+      this.stopPlay();
       this.$store.dispatch('PLAYLIST_CHANGE_SONG', this.currentPosition + 1);
       this.startPlay();
       return true;
@@ -149,7 +160,9 @@ export default {
         this.currentPosition !== -1 ? scrollPosition : 160,
         this.currentPosition !== -1 ? 70 : 50);
 
-      if (this.isLoading) {
+      if (this.hasError) {
+        this.drawErrorAnimation();
+      } else if (this.isLoading) {
         this.drawLoading(this.currentProgress, `${this.currentDownloadSpeed}kbps`);
       } else if (this.currentPosition !== -1) {
         this.drawPlayingAnimation();
@@ -188,6 +201,15 @@ export default {
       this.ctx.fillStyle = '#BBBBBB';
       this.ctx.fillRect(40 + this.ctx.measureText(startDur).width, 20, playedLen <= totalLen ? playedLen : totalLen, 4);
 
+      this.resetSettings();
+    },
+    drawErrorAnimation: function () {
+      this.ctx.font = '36px Material Icons';
+      this.ctx.textAlign = 'left';
+      if (this.frame % 12 <= 6) this.ctx.fillText('warning', 100, 42);
+      this.ctx.font = '18px Source Sans Pro';
+      this.ctx.textAlign = 'right';
+      if (this.frame % 12 <= 6) this.ctx.fillText('Could not locate the music file.', 380, 28);
       this.resetSettings();
     },
     resetSettings: function () {

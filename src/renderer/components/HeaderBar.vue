@@ -4,7 +4,7 @@
       <h1 class="app-head-title" style="cursor: default;" v-if="$route.name === 'home-page'" key="Swish">Swish</h1>
       <i class="app-head-title material-icons" v-else @click="goBack()" key="Back">arrow_back</i>
     </transition>
-    <search-widget style="width: 50%; -webkit-app-region: no-drag;" :class="{ disabled: $store.state.Interface.hideHeader }"></search-widget>
+    <search-widget style="width: 45%; -webkit-app-region: no-drag;" :class="{ disabled: $store.state.Interface.hideHeader }"></search-widget>
     <now-playing-widget style="width: 25%;"></now-playing-widget>
     <traffic-lights @togglePlaylist="enablePlaylist = !enablePlaylist"></traffic-lights>
     <playlist-widget :isPlaylistToggled="enablePlaylist"></playlist-widget>

@@ -1,6 +1,7 @@
 <template>
   <div id="app-electron-traffic-lights">
     <div class="swish-electron-traffic-light" @click="openPlaylist" :class="{ enabled: $store.state.Playlist.playlist.length > 0 }"><i class="material-icons" style="margin-left: 2px;">playlist_play</i></div>
+    <div class="swish-electron-traffic-light" @click="openSettings"><i class="material-icons swish-mi-smaller">settings</i></div>
     <div class="swish-electron-traffic-light" @click="minimizeApp"><i class="material-icons">remove</i></div>
     <div class="swish-electron-traffic-light" @click="closeApp"><i class="material-icons">close</i></div>
   </div>
@@ -20,6 +21,9 @@
       },
       minimizeApp: function () {
         this.$electron.ipcRenderer.send('APP_MINIMIZE');
+      },
+      openSettings: function () {
+        alert('Settings have not been implemented yet.');
       },
       openPlaylist: function () {
         this.$emit('togglePlaylist');
@@ -45,6 +49,7 @@
     margin: 0 2px;
 
     & .material-icons { font-size: 24px; }
+    & .swish-mi-smaller { font-size: 18px; padding: 3px 4px; }
 
     &:hover {
       background-color: rgba(100, 100, 100, 0.2);
