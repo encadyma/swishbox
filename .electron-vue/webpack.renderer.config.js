@@ -122,6 +122,16 @@ let rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
+    new HtmlWebpackPlugin({
+      filename: 'loading.html',
+      template: path.resolve(__dirname, '../src/loading.ejs'),
+      minify: {
+        collapseWhitespace: true,
+        removeAttributeQuotes: true,
+        removeComments: true
+      },
+      nodeModules: false
+    }),
     new webpack.DefinePlugin({
       'process.env.SWISHBOX_VERSION': JSON.stringify(version)
     }),

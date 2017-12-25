@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import ytdl from 'ytdl-core';
 import ffmpeg from 'fluent-ffmpeg';
+import ffbinaries from 'ffbinaries';
 
 /**
  * Set `__static` path to static files in production
@@ -13,9 +14,15 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow;
+let loadingWindow;
+
 const winURL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:9080'
   : `file://${__dirname}/index.html`;
+
+const loadingURL = process.env.NODE_ENV === 'development'
+  ? 'http://localhost:9080/loading.html'
+  : `file://${__dirname}/loading.html`;
 
 function createWindow() {
   /**
@@ -44,7 +51,37 @@ function createWindow() {
   });
 }
 
-app.on('ready', createWindow);
+function createLoadingWindow() {
+  loadingWindow = new BrowserWindow({
+    height: 100,
+    width: 300,
+    useContentSize: true,
+    resizable: false,
+    frame: false,
+    fullscreenable: false,
+    title: 'Loading Swishbox..'
+  });
+
+  loadingWindow.loadURL(loadingURL);
+
+  loadingWindow.on('closed', () => {
+    loadingWindow = null;
+  });
+
+  // Setup ffmpeg in /bin
+  const ffmpegInstallPath = path.join(app.getPath('userData'), 'bin');
+  if (!fs.existsSync(ffmpegInstallPath)) fs.mkdirSync(ffmpegInstallPath);
+  ffmpeg.setFfmpegPath(path.join(ffmpegInstallPath, 'ffmpeg'));
+
+  ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {
+    destination: ffmpegInstallPath
+  }, () => {
+    loadingWindow.destroy();
+    createWindow();
+  });
+}
+
+app.on('ready', createLoadingWindow);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

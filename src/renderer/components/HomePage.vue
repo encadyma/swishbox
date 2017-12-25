@@ -4,6 +4,7 @@
       <img src="../assets/logo.png" height="300"/>
       <h2>Welcome to Swishbox</h2>
       <i>version {{version}}</i><br>
+      <i><small>ffmpeg: {{path}}</small></i><br>
       <button class="swish-button-border" style="margin: 10px 0;" @click="openFeedback()">Send Feedback</button>
     </main>
   </div>
@@ -14,7 +15,8 @@
     name: 'home-page',
     data: function () {
       return {
-        version: process.env.SWISHBOX_VERSION
+        version: process.env.SWISHBOX_VERSION,
+        path: '??'
       };
     },
     methods: {

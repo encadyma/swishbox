@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Loading Swishbox...</title>
+    <% if (htmlWebpackPlugin.options.nodeModules) { %>
+      <!-- Add `node_modules/` to global paths so `require` works properly in development -->
+      <script>
+        require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
+      </script>
+    <% } %>
+    <style>
+      html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #BBB;
+        color: #666;
+        font-size: 14px;
+        font-family: sans-serif;
+      }
+      .loading-screen {
+        padding: 30vh 0;
+        text-align: center;
+      }
+
+      .loading-bar {
+        background-color: #999;
+        position: relative;
+        height: 6px;
+        width: 80%;
+        margin: 20px auto;
+        overflow: hidden;
+      }
+
+      @keyframes loading {
+        from { left: -40px; }
+        to { left: 340px; }
+      }
+
+      .loading-bar:after {
+        background-color: #AAA;
+        content: '';
+        height: 6px;
+        width: 40px;
+        animation: loading 2000ms infinite ease;
+        position: absolute;
+        top: 0;
+        left: -20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loading-screen">
+      Swishbox is setting everything up...
+      <div class="loading-bar"></div>
+    </div>
+  </body>
+</html>
