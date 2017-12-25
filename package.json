@@ -22,7 +22,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "swishbox",
+    "productName": "Swishbox Nightly",
     "appId": "com.encadyma.swishbox",
     "directories": {
       "output": "build"
