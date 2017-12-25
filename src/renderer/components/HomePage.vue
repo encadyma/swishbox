@@ -3,14 +3,25 @@
     <main>
       <img src="../assets/logo.png" height="300"/>
       <h2>Welcome to Swishbox</h2>
-      <i>version 0.01</i>
+      <i>version {{version}}</i><br>
+      <button class="swish-button-border" style="margin: 10px 0;" @click="openFeedback()">Send Feedback</button>
     </main>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'home-page'
+    name: 'home-page',
+    data: function () {
+      return {
+        version: process.env.SWISHBOX_VERSION
+      };
+    },
+    methods: {
+      openFeedback() {
+        this.$electron.shell.openExternal('https://github.com/encadyma/swishbox/issues');
+      }
+    }
   };
 </script>
 

@@ -1,9 +1,9 @@
 {
   "name": "swishbox",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Kevin Mo <encadyma>",
-  "description": "Swishbox is a Youtube music player",
-  "license": null,
+  "description": "Swishbox is a Youtube music player.",
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",

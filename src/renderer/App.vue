@@ -96,6 +96,27 @@
     font-weight: 600;
   }
 
+  .swish-button-border {
+    background-color: rgba(255, 255, 255, 0);
+    border: 1px solid rgba(40, 0, 200, 0.4);
+    border-radius: 4px;
+    color: rgba(40, 0, 200, 0.8);
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 14px;
+    outline: none;
+    padding: 8px 14px;
+
+    &:hover {
+      background-color: rgba(40, 0, 200, 0.04);
+      border-color: rgba(40, 0, 200, 0.6);
+    }
+
+    &:active {
+      background-color: rgba(40, 0, 200, 0.12);
+      border-color: rgba(40, 0, 200, 0.8);
+    }
+  }
+
   .swish-bubble-error {
     background-color: rgba(250, 250, 250, 0.5);
     border-radius: 4px;
