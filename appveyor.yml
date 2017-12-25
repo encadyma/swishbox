@@ -16,6 +16,10 @@ cache:
   - '%USERPROFILE%\.electron'
   - '%USERPROFILE%\AppData\Local\Yarn\cache'
 
+environment:
+  BUILD_SECRET:
+    secure: qSBSgZUzC3qjfGPc4b194a+tIWVk0csNE2UoW6Sk2JQ=
+
 init:
   - git config --global core.autocrlf input
 
@@ -24,6 +28,8 @@ install:
   - git reset --hard HEAD
   - yarn
   - node --version
+  - nuget install secure-file -ExcludeVersion
+  - secure-file\tools\secure-file -decrypt src\secrets.json.av.enc -secret %BUILD_SECRET%
 
 build_script:
   #- yarn test
