@@ -29,7 +29,7 @@ install:
   - yarn
   - node --version
   - nuget install secure-file -ExcludeVersion
-  - secure-file\tools\secure-file -decrypt src\secrets.json.av.enc -secret %BUILD_SECRET%
+  - secure-file\tools\secure-file -decrypt src\secrets.json.av.enc -secret %BUILD_SECRET% -out src\secrets.json
 
 build_script:
   #- yarn test
