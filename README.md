@@ -23,12 +23,12 @@ The goal is to be as simple as it can be so it doesn't get in your way.
 
 ## Install Instructions
 
-####Step 1
+#### Step 1
 All of Swishbox's releases can be found [here](https://github.com/encadyma/swishbox/releases). As of now, it is recommended that all testers download the **latest nightly release**.
 
 [Download Swishbox here.](https://github.com/encadyma/swishbox/releases)
 
-####Step 2
+#### Step 2
 
 - **For Windows users:**: Download `swishbox-windows-[version].exe` and double-click to execute the setup program.
 - **For Mac users:**: Download and double-click `swishbox-mac-[version].dmg`. Drag `Swishbox Nightly.app` to your Applications folder and double-click to open. Alternatively, download and unzip `swishbox-mac-[version].zip` for the app directly.
