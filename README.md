@@ -1,4 +1,6 @@
 # Swishbox
+[![Build Status](https://travis-ci.org/encadyma/swishbox.svg?branch=master)](https://travis-ci.org/encadyma/swishbox) [![Build status](https://ci.appveyor.com/api/projects/status/1t3re4ape204l6l1/branch/master)](https://ci.appveyor.com/project/encadyma/swishbox/branch/master)
+
 
 Swishbox is a Youtube music player made for people who rely on Youtube's vast video library for their music needs. It keeps the listening experience simple: search to find music, click to queue song. Enjoy doing what you love, distraction-free.
 
