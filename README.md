@@ -58,7 +58,7 @@ yarn run dev
 
 ## Licensing
 
-This program is licensed under the **GNU General Public License v3.0**. Read [LICENSE.md](https://github.com/encadyma/swishbox/blob/master/LICENSE.md) for more information about this license.
+This program is licensed under the **GNU General Public License v3.0**. Read [LICENSE](https://github.com/encadyma/swishbox/blob/master/LICENSE) for more information about this license.
 
 ---
 
