@@ -73,7 +73,7 @@ function createLoadingWindow() {
   if (!fs.existsSync(ffmpegInstallPath)) fs.mkdirSync(ffmpegInstallPath);
   ffmpeg.setFfmpegPath(path.join(ffmpegInstallPath, 'ffmpeg'));
 
-  ffbinaries.downloadFiles(['ffmpeg', 'ffprobe'], {
+  ffbinaries.downloadFiles(['ffmpeg'], {
     destination: ffmpegInstallPath
   }, () => {
     loadingWindow.destroy();
