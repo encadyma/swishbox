@@ -9,7 +9,7 @@
 <script>
   export default {
     methods: {
-      closeApp: function () {
+      closeApp() {
         this.$modal.show('dialog', {
           title: 'Confirm Quit',
           text: 'Are you sure you want to quit Swishbox?',
@@ -19,13 +19,13 @@
           ]
         });
       },
-      minimizeApp: function () {
+      minimizeApp() {
         this.$electron.ipcRenderer.send('APP_MINIMIZE');
       },
-      openSettings: function () {
+      openSettings() {
         alert('Settings have not been implemented yet.');
       },
-      openPlaylist: function () {
+      openPlaylist() {
         this.$emit('togglePlaylist');
       }
     }

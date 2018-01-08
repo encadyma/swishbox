@@ -35,7 +35,7 @@
 
   export default {
     props: ['isPlaylistToggled'],
-    data: function () {
+    data() {
       return { selectedSong: -1 };
     },
     computed: {
@@ -62,7 +62,7 @@
       }
     },
     watch: {
-      isPlaylistToggled: function (val) {
+      isPlaylistToggled(val) {
         // Deselect any selected songs once the playlist is hidden
         if (!val) this.selectedSong = -1;
       }

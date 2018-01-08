@@ -14,7 +14,7 @@
 <script>
 
 export default {
-  data: function () {
+  data() {
     return {
       frame: 0,
       canvas: null,
@@ -28,7 +28,7 @@ export default {
       currentObjectAudio: null
     };
   },
-  mounted: function () {
+  mounted() {
     // Initialize audio context
     const WindowAudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioContext = new WindowAudioContext();
@@ -73,23 +73,23 @@ export default {
       this.$store.commit('PLAYLIST_MUT_UPDATE_SONG_PROGRESS', progressObj);
     });
   },
-  beforeDestroy: function () {
+  beforeDestroy() {
     this.audioContext.close();
   },
   methods: {
-    startPlay: function () {
+    startPlay() {
       this.loadSong().then((response) => {
         if (response) this.currentSongAudio.play();
         this.isPlaying = response;
       });
     },
-    stopPlay: function () {
+    stopPlay() {
       if (this.currentSongSource === null) return false;
       this.currentSongAudio.pause();
       this.isPlaying = false;
       return true;
     },
-    resetAudio: function () {
+    resetAudio() {
       if (this.currentObjectAudio) URL.revokeObjectURL(this.currentObjectAudio);
       this.currentDuration = 0;
       this.currentSongAudio = null;
@@ -97,7 +97,7 @@ export default {
       this.currentObjectAudio = null;
       this.hasError = null;
     },
-    loadSong: function () {
+    loadSong() {
       if (this.currentSongSource !== null) return Promise.resolve(true);
       if (this.currentPosition === -1) return Promise.resolve(false);
       if (this.isLoading) return Promise.resolve(false);
@@ -130,21 +130,21 @@ export default {
         });
       });
     },
-    sendPlaylistBackwards: function () {
+    sendPlaylistBackwards() {
       if (this.currentPosition === 0) return false;
       this.stopPlay();
       this.$store.dispatch('PLAYLIST_CHANGE_SONG', this.currentPosition - 1);
       this.startPlay();
       return true;
     },
-    sendPlaylistForwards: function () {
+    sendPlaylistForwards() {
       if (this.currentPosition === this.currentPlaylist.length - 1) return false;
       this.stopPlay();
       this.$store.dispatch('PLAYLIST_CHANGE_SONG', this.currentPosition + 1);
       this.startPlay();
       return true;
     },
-    updateCanvas: function () {
+    updateCanvas() {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       this.resetSettings();
@@ -169,7 +169,7 @@ export default {
       }
     },
     // Drawing the loading bars for download progress
-    drawLoading: function (progress, helpText) {
+    drawLoading(progress, helpText) {
       progress = (progress >= 100 ? 100 : progress);
       this.ctx.fillRect(10, 14, 4.6 * progress, 24);
 
@@ -180,7 +180,7 @@ export default {
       this.resetSettings();
     },
     // Drawing the song playing bar
-    drawPlayingAnimation: function () {
+    drawPlayingAnimation() {
       const startDur = this.genStrDuration(this.currentDuration);
       const endDur = this.genStrDuration(this.currentSong.duration);
 
@@ -203,7 +203,7 @@ export default {
 
       this.resetSettings();
     },
-    drawErrorAnimation: function () {
+    drawErrorAnimation() {
       this.ctx.font = '36px Material Icons';
       this.ctx.textAlign = 'left';
       if (this.frame % 12 <= 6) this.ctx.fillText('warning', 100, 42);
@@ -212,13 +212,13 @@ export default {
       if (this.frame % 12 <= 6) this.ctx.fillText('Could not locate the music file.', 380, 28);
       this.resetSettings();
     },
-    resetSettings: function () {
+    resetSettings() {
       this.ctx.fillStyle = '#AAAAAA';
       this.ctx.font = '20px Source Sans Pro';
       this.ctx.globalCompositeOperation = 'source-over';
       this.ctx.textAlign = 'start';
     },
-    genStrDuration: function (duration) {
+    genStrDuration(duration) {
       let dur = [];
 
       duration = Math.round(duration);
@@ -237,32 +237,32 @@ export default {
     }
   },
   computed: {
-    currentPlaylist: function () {
+    currentPlaylist() {
       return this.$store.state.Playlist.playlist;
     },
-    currentPosition: function () {
+    currentPosition() {
       return this.$store.state.Playlist.currentPosition;
     },
-    currentSong: function () {
+    currentSong() {
       return this.currentPlaylist[this.currentPosition];
     },
-    isLoading: function () {
+    isLoading() {
       // MEANING: Finished downloading
       if (this.currentPosition === -1) return false;
       return !this.currentQueue[this.currentPlaylist[this.currentPosition].id].hasFinished;
     },
-    currentQueue: function () {
+    currentQueue() {
       return this.$store.state.Playlist.masterQueue;
     },
-    currentSongInQueue: function () {
+    currentSongInQueue() {
       if (this.currentPosition === -1) return undefined;
       return this.currentQueue[this.currentPlaylist[this.currentPosition].id];
     },
-    currentProgress: function () {
+    currentProgress() {
       if (this.currentPosition === -1) return 0;
       return this.currentQueue[this.currentPlaylist[this.currentPosition].id].loading;
     },
-    currentDownloadSpeed: function () {
+    currentDownloadSpeed() {
       if (!this.isLoading) return 0;
       return this.currentQueue[this.currentPlaylist[this.currentPosition].id].dlSpeed;
     }

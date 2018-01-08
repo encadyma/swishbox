@@ -14,10 +14,10 @@
   export default {
     props: ['result', 'loading'],
     computed: {
-      description: function () {
+      description() {
         return this.result.description.length > 70 ? `${this.result.description.substr(0, 70)}...` : this.result.description;
       },
-      truncPlays: function () {
+      truncPlays() {
         const level = Math.log(this.result.views) / Math.log(10);
         if (isNaN(level)) return '0';
         else if (Math.floor(level) >= 9) return `${Math.trunc(this.result.views / 1000000000)}B`;
@@ -25,7 +25,7 @@
         else if (Math.floor(level) >= 3) return `${Math.trunc(this.result.views / 1000)}K`;
         return `${this.result.views}`;
       },
-      strDuration: function () {
+      strDuration() {
         let dur = [];
 
         // Add hours only if necessary
