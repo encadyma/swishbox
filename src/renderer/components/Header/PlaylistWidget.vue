@@ -16,6 +16,7 @@
             <span class="swish-text-title">{{ song.title }}</span>
             <span class="swish-text-subtitle" v-if="song.author.name">{{ song.author.name }}</span>
           </div>
+          <div class="swish-playlist-item-remove" @click="removeSongFromPlaylist(index)">REMOVE</div>
         </div>
       </div>
 
@@ -59,6 +60,9 @@
       },
       switchSongs(index) {
         this.$store.dispatch('PLAYLIST_CHANGE_SONG', index);
+      },
+      removeSongFromPlaylist(index) {
+        this.$store.dispatch('PLAYLIST_REMOVE_SONG', index);
       }
     },
     watch: {
@@ -90,10 +94,27 @@
   .swish-playlist-item {
     box-sizing: border-box;
     padding: 8px 12px;
+    position: relative;
     width: 100%;
     
     .swish-text-subtitle { margin-left: 8px; }
     .swish-playlist-item-title > * { vertical-align: middle; }
+
+    .swish-playlist-item-remove {
+      background-color: rgba(200, 200, 200, 0.6);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 9px;
+      padding: 4px 6px;
+      visibility: hidden;
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+    }
+
+    &:hover .swish-playlist-item-remove {
+      visibility: visible;
+    }
 
     &.selected {
       background-color: rgba(100, 100, 100, 0.1);
