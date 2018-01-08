@@ -12,8 +12,6 @@
   </div>
 </template>
 <script>
-import notifier from 'node-notifier';
-
 export default {
   data() {
     return {
@@ -85,11 +83,7 @@ export default {
     startPlay() {
       this.loadSong().then((response) => {
         if (response) {
-          notifier.notify({
-            title: this.currentSong.title,
-            message: this.currentSong.author.name,
-            icon: require('../../assets/logo.png')
-          });
+          this.$electron.ipcRenderer.send('PLAYER_MUSIC_NOTIFICATION', this.currentSong);
           this.currentSongAudio.play();
         }
         this.isPlaying = response;

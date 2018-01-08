@@ -1,8 +1,9 @@
-import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron' // eslint-disable-line
+import { app, BrowserWindow, ipcMain, Menu, shell, Notification } from 'electron' // eslint-disable-line
 
 import fs from 'fs';
 import path from 'path';
 
+import request from 'request';
 import ytdl from 'ytdl-core';
 import ffmpeg from 'fluent-ffmpeg';
 import ffbinaries from 'ffbinaries';
@@ -27,10 +28,8 @@ const loadingURL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:9080/loading.html'
   : `file://${__dirname}/loading.html`;
 
-//
-// MENU CODE
-//
 
+// BEGIN MENU CODE
 const template = [
   {
     label: 'Edit',
@@ -87,7 +86,6 @@ const template = [
     ]
   }
 ];
-
 if (process.platform === 'darwin') {
   template.unshift({
     label: app.getName(),
@@ -106,12 +104,69 @@ if (process.platform === 'darwin') {
     ]
   });
 }
-
 const menu = Menu.buildFromTemplate(template);
-
-//
 // END MENU CODE
-//
+
+// BEGIN STORAGE CODE
+function initStorage() {
+  const thumbnailsPath = path.join(app.getPath('userData'), 'yt_thumbnails');
+  const metadataFile = path.join(app.getPath('userData'), 'yt_songs.json');
+  const preferencesFile = path.join(app.getPath('userData'), 'preferences.json');
+
+  const defaultSongPrefs = {
+    ids: [],
+    saved: [],
+    songs: {},
+  };
+
+  const defaultPreferences = {};
+
+  if (!fs.existsSync(thumbnailsPath)) fs.mkdirSync(thumbnailsPath);
+  if (!fs.existsSync(metadataFile)) fs.writeFileSync(metadataFile, JSON.stringify(defaultSongPrefs));
+  if (!fs.existsSync(preferencesFile)) fs.writeFileSync(preferencesFile, JSON.stringify(defaultPreferences));
+}
+
+function saveYoutubeMetadata(info) {
+  const thumbnailsPath = path.join(app.getPath('userData'), 'yt_thumbnails', `${info.video_id}.jpg`);
+  const metadataFile = path.join(app.getPath('userData'), 'yt_songs.json');
+
+  const savedMetadata = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
+  if (savedMetadata.ids.indexOf(info.video_id) !== -1) return;
+
+  const videoMetadata = {
+    id: info.video_id,
+    title: info.title,
+    author: info.author,
+    duration: info.length_seconds,
+    keywords: info.keywords,
+    description: info.description,
+    thumbnail: thumbnailsPath,
+    remoteThumbnail: info.iurlhq
+  };
+
+  savedMetadata.ids.push(info.video_id);
+  savedMetadata.saved.push(info.video_id);
+  savedMetadata.songs[info.video_id] = videoMetadata;
+
+  fs.writeFileSync(metadataFile, JSON.stringify(savedMetadata));
+
+  request(info.iurlhq).pipe(fs.createWriteStream(thumbnailsPath)).on('close', () => {
+    mainWindow.webContents.send("STORAGE_METADATA_UPDATE", savedMetadata);
+  });
+}
+
+ipcMain.on('STORAGE_METADATA_FETCH', () => {
+  const metadataFile = path.join(app.getPath('userData'), 'yt_songs.json');
+  const dataFile = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
+  mainWindow.webContents.send("STORAGE_METADATA_UPDATE", dataFile);
+});
+
+ipcMain.on('STORAGE_PREFERENCES_FETCH', () => {
+  const prefsFile = path.join(app.getPath('userData'), 'preferences.json');
+  const dataFile = JSON.parse(fs.readFileSync(prefsFile, 'utf8'));
+  mainWindow.webContents.send("STORAGE_PREFERENCES_UPDATE", dataFile);
+});
+// END STORAGE CODE
 
 function createWindow() {
   /**
@@ -159,6 +214,9 @@ function createLoadingWindow() {
     loadingWindow = null;
   });
 
+  // Setup storage
+  initStorage();
+
   // Setup ffmpeg in /bin
   const ffmpegInstallPath = path.join(app.getPath('userData'), 'bin');
   if (!fs.existsSync(ffmpegInstallPath)) fs.mkdirSync(ffmpegInstallPath);
@@ -171,6 +229,16 @@ function createLoadingWindow() {
     createWindow();
   });
 }
+
+ipcMain.on('PLAYER_MUSIC_NOTIFICATION', (event, song) => {
+  if (Notification.isSupported() && !mainWindow.isFocused()) {
+    new Notification({
+      title: song.title,
+      body: song.author.name,
+      silent: true
+    }).show();
+  }
+});
 
 // For Youtube downloads queried
 // from the Vue frontend
@@ -196,7 +264,9 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
 
   let progressPercent = 0;
 
-  video.on('info', () => {
+  video.on('info', (info) => {
+    saveYoutubeMetadata(info);
+
     const videoProc = ffmpeg({ source: video })
       .format('mp3')
       .output(path.join(videoDir, `${yt}.mp3`));
