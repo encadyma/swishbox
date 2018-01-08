@@ -30,9 +30,9 @@ All of Swishbox's releases can be found [here](https://github.com/encadyma/swish
 
 #### Step 2
 
-- **For Windows users:**: Download `swishbox-windows-[version].exe` and double-click to execute the setup program.
-- **For Mac users:**: Download and double-click `swishbox-mac-[version].dmg`. Drag `Swishbox Nightly.app` to your Applications folder and double-click to open. Alternatively, download and unzip `swishbox-mac-[version].zip` for the app directly.
-- **For Linux users:**: Download and open the AppImage `swishbox-linux-[version].AppImage`.
+- **For Windows users:** Download `swishbox-windows-[version].exe` and double-click to execute the setup program.
+- **For Mac users:** Download and double-click `swishbox-mac-[version].dmg`. Drag `Swishbox Nightly.app` to your Applications folder and double-click to open. Alternatively, download and unzip `swishbox-mac-[version].zip` for the app directly.
+- **For Linux users:** Download and open the AppImage `swishbox-linux-[version].AppImage`.
 
 ## Building From Source
 Swishbox prefers the `yarn` tool over `npm`. You can install yarn globally by running `npm i -g yarn` in a command line.
