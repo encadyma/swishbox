@@ -72,6 +72,10 @@ export default {
     this.$electron.ipcRenderer.on('YT_DOWNLOAD_PROGRESS', (event, progressObj) => {
       this.$store.commit('PLAYLIST_MUT_UPDATE_SONG_PROGRESS', progressObj);
     });
+
+    this.$electron.ipcRenderer.on('PLAYER_TOGGLE_PLAY', (this.isPlaying ? this.stopPlay : this.startPlay));
+    this.$electron.ipcRenderer.on('PLAYER_PREVIOUS_SONG', this.sendPlaylistBackwards);
+    this.$electron.ipcRenderer.on('PLAYER_NEXT_SONG', this.sendPlaylistForwards);
   },
   beforeDestroy() {
     this.audioContext.close();

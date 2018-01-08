@@ -1,6 +1,8 @@
-import { app, BrowserWindow, ipcMain } from 'electron' // eslint-disable-line
+import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron' // eslint-disable-line
+
 import fs from 'fs';
 import path from 'path';
+
 import ytdl from 'ytdl-core';
 import ffmpeg from 'fluent-ffmpeg';
 import ffbinaries from 'ffbinaries';
@@ -9,6 +11,7 @@ import ffbinaries from 'ffbinaries';
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
+
 if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\') // eslint-disable-line
 }
@@ -23,6 +26,92 @@ const winURL = process.env.NODE_ENV === 'development'
 const loadingURL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:9080/loading.html'
   : `file://${__dirname}/loading.html`;
+
+//
+// MENU CODE
+//
+
+const template = [
+  {
+    label: 'Edit',
+    submenu: [
+      { role: 'undo' },
+      { role: 'redo' },
+      { type: 'separator' },
+      { role: 'cut' },
+      { role: 'copy' },
+      { role: 'paste' },
+      { role: 'delete' },
+      { role: 'selectall' }
+    ]
+  },
+  {
+    label: 'Playback',
+    submenu: [
+      {
+        label: 'Play/Pause',
+        accelerator: 'Space', 
+        click() {
+          mainWindow.webContents.send("PLAYER_TOGGLE_PLAY");
+        }
+      },
+      { 
+        label: 'Next', 
+        accelerator: 'CmdOrCtrl+Right', 
+        click() {
+          mainWindow.webContents.send("PLAYER_NEXT_SONG");
+        }
+      },
+      {
+        label: 'Previous', 
+        accelerator: 'CmdOrCtrl+Left', 
+        click() {
+          mainWindow.webContents.send("PLAYER_PREVIOUS_SONG");
+        }
+      },
+    ]
+  },
+  {
+    role: 'window',
+    submenu: [
+      {role: 'minimize'},
+      {role: 'close'}
+    ]
+  },
+  {
+    role: 'help',
+    submenu: [
+      { label: 'Swishbox Releases', click() { shell.openExternal('https://github.com/encadyma/swishbox/releases'); } },
+      { label: 'Submit Issues and Feature Requests...', click() { shell.openExternal('https://github.com/encadyma/swishbox/issues'); } },
+      { label: 'Visit Developer Site', click() { shell.openExternal('https://encadyma.com'); } },
+    ]
+  }
+];
+
+if (process.platform === 'darwin') {
+  template.unshift({
+    label: app.getName(),
+    submenu: [
+      {role: 'about'},
+      {type: 'separator'},
+      {label: 'Preferences...', accelerator: 'Cmd+,'},
+      {type: 'separator'},
+      {role: 'services', submenu: []},
+      {type: 'separator'},
+      {role: 'hide'},
+      {role: 'hideothers'},
+      {role: 'unhide'},
+      {type: 'separator'},
+      {role: 'quit'}
+    ]
+  });
+}
+
+const menu = Menu.buildFromTemplate(template);
+
+//
+// END MENU CODE
+//
 
 function createWindow() {
   /**
@@ -43,6 +132,8 @@ function createWindow() {
       backgroundThrottling: false
     }
   });
+
+  Menu.setApplicationMenu(menu);
 
   mainWindow.loadURL(winURL);
 
@@ -81,28 +172,8 @@ function createLoadingWindow() {
   });
 }
 
-app.on('ready', createLoadingWindow);
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
-
-ipcMain.on('APP_MINIMIZE', () => {
-  mainWindow.minimize();
-});
-
-ipcMain.on('APP_CLOSE', () => {
-  app.quit();
-});
-
+// For Youtube downloads queried
+// from the Vue frontend
 ipcMain.on('YT_DOWNLOAD', (event, yt) => {
   if (!fs.existsSync(path.join(app.getPath('userData'), 'yt_cache'))) fs.mkdirSync(path.join(app.getPath('userData'), 'yt_cache'));
   if (!ytdl.validateID(yt)) return;
@@ -153,10 +224,6 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
     });
 
     videoProc.run();
-
-    /* video.pipe(fs.createWriteStream(path.join(videoDir, `${yt}.${format.container}`)), {
-      filter: 'audioonly'
-    }); */
   });
 
   video.on('progress', (chunkLength, downloaded, total) => {
@@ -164,6 +231,27 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
   });
 });
 
+app.on('ready', createLoadingWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
+
+ipcMain.on('APP_MINIMIZE', () => {
+  mainWindow.minimize();
+});
+
+ipcMain.on('APP_CLOSE', () => {
+  app.quit();
+});
 
 /**
  * Auto Updater

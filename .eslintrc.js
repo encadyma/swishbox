@@ -27,6 +27,9 @@ module.exports = {
     'object-shorthand': 0,
     'func-names': 0,
     'max-len': 0,
+    'object-curly-spacing': 0,
+    'no-trailing-spaces': 0,
+    'quotes': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
