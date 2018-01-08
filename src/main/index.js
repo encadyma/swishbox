@@ -137,7 +137,7 @@ function saveYoutubeMetadata(info) {
     id: info.video_id,
     title: info.title,
     author: info.author,
-    duration: info.length_seconds,
+    duration: parseInt(info.length_seconds, 10),
     keywords: info.keywords,
     description: info.description,
     thumbnail: thumbnailsPath,
@@ -155,13 +155,13 @@ function saveYoutubeMetadata(info) {
   });
 }
 
-ipcMain.on('STORAGE_METADATA_FETCH', () => {
+ipcMain.on("STORAGE_METADATA_FETCH", () => {
   const metadataFile = path.join(app.getPath('userData'), 'yt_songs.json');
   const dataFile = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
   mainWindow.webContents.send("STORAGE_METADATA_UPDATE", dataFile);
 });
 
-ipcMain.on('STORAGE_PREFERENCES_FETCH', () => {
+ipcMain.on("STORAGE_PREFERENCES_FETCH", () => {
   const prefsFile = path.join(app.getPath('userData'), 'preferences.json');
   const dataFile = JSON.parse(fs.readFileSync(prefsFile, 'utf8'));
   mainWindow.webContents.send("STORAGE_PREFERENCES_UPDATE", dataFile);
