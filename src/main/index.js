@@ -183,25 +183,25 @@ function getCacheFolderSize() {
   return Math.round(totalSize);
 }
 
-ipcMain.on("STORAGE_METADATA_FETCH", () => {
+ipcMain.on("STORAGE_METADATA_FETCH", (event) => {
   const metadataFile = path.join(app.getPath('userData'), 'yt_songs.json');
   const dataFile = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
-  mainWindow.webContents.send("STORAGE_METADATA_UPDATE", dataFile);
+  event.sender.send("STORAGE_METADATA_UPDATE", dataFile);
 });
 
-ipcMain.on("STORAGE_PREFERENCES_FETCH", () => {
+ipcMain.on("STORAGE_PREFERENCES_FETCH", (event) => {
   const prefsFile = path.join(app.getPath('userData'), 'preferences.json');
   const dataFile = JSON.parse(fs.readFileSync(prefsFile, 'utf8'));
-  mainWindow.webContents.send("STORAGE_PREFERENCES_UPDATE", dataFile);
+  event.sender.send("STORAGE_PREFERENCES_UPDATE", dataFile);
 });
 
-ipcMain.on("STORAGE_CACHE_GET_SIZE", () => {
-  mainWindow.webContents.send("STORAGE_CACHE_UPDATE_SIZE", getCacheFolderSize());
+ipcMain.on("STORAGE_CACHE_GET_SIZE", (event) => {
+  event.sender.send("STORAGE_CACHE_UPDATE_SIZE", getCacheFolderSize());
 });
 
-ipcMain.on("STORAGE_CACHE_PURGE", () => {
+ipcMain.on("STORAGE_CACHE_PURGE", (event) => {
   purgeCacheFolder();
-  mainWindow.webContents.send("STORAGE_CACHE_UPDATE_SIZE", getCacheFolderSize());
+  event.sender.send("STORAGE_CACHE_UPDATE_SIZE", getCacheFolderSize());
 });
 // END STORAGE CODE
 
