@@ -57,6 +57,9 @@ const actions = {
       commit('PLAYLIST_MUT_SET_CURRENT_POSITION', -1);
     } else if (deletedSongPosition < state.currentPosition) {
       commit('PLAYLIST_MUT_SET_CURRENT_POSITION', state.currentPosition - 1);
+    } else {
+      // Temporary solution is to stop playing
+      commit('PLAYLIST_MUT_SET_CURRENT_POSITION', -1);
     }
 
     const newPlaylist = state.playlist.filter((v, i) => i !== deletedSongPosition);
