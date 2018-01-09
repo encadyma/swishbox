@@ -1,7 +1,7 @@
 {
   "name": "swishbox",
   "version": "0.1.1",
-  "author": "Kevin Mo <encadyma>",
+  "author": "Kevin Mo <encadyma.hi@gmail.com>",
   "description": "Experimental desktop music player for those who use Youtube for music.",
   "license": "GPL-3.0",
   "main": "./dist/electron/main.js",
@@ -68,7 +68,7 @@
     "vue-router": "^2.5.3",
     "vue-scroll": "^2.1.6",
     "vuex": "^2.3.1",
-    "ytdl-core": "^0.18.6"
+    "ytdl-core": "^0.18.7"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
@@ -89,7 +89,7 @@
     "del": "^3.0.0",
     "devtron": "^1.4.0",
     "electron": "^1.7.5",
-    "electron-builder": "^19.53.2",
+    "electron-builder": "^19.53.3",
     "electron-debug": "^1.5.0",
     "electron-devtools-installer": "^2.2.3",
     "eslint": "^4.15.0",
@@ -125,8 +125,16 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.13",
     "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.10.0",
+    "webpack-dev-server": "^2.10.1",
     "webpack-hot-middleware": "^2.18.2",
     "webpack-merge": "^4.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/encadyma/swishbox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/encadyma/swishbox/issues"
+  },
+  "homepage": "https://github.com/encadyma/swishbox"
 }
