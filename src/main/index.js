@@ -153,6 +153,9 @@ function saveYoutubeMetadata(info) {
   fs.writeFileSync(metadataFile, JSON.stringify(savedMetadata));
 
   request(remoteThumbnail)
+    .on('response', (err) => {
+      console.log(err);
+    })
     .pipe(fs.createWriteStream(thumbnailsPath)).on('close', () => {
       mainWindow.webContents.send("STORAGE_METADATA_UPDATE", savedMetadata);
     });
