@@ -27,7 +27,7 @@
 
   export default {
     components: { SearchResult },
-    data: function () {
+    data() {
       return {
         loading: true,
         results: API.sampleVideos,
@@ -36,10 +36,9 @@
       };
     },
     methods: {
-      addSongToPlaylist: function (song) {
+      addSongToPlaylist(song) {
         if (this.loading) return;
         this.$store.dispatch('PLAYLIST_ADD_SONG', song);
-        // this.goToVideo(song.id);
         this.$electron.ipcRenderer.send('YT_DOWNLOAD', song.id);
         this.$notify({
           group: 'player',
@@ -47,7 +46,7 @@
           text: 'has been added to the playlist.'
         });
       },
-      loadSearch: function () {
+      loadSearch() {
         this.loading = true;
         this.error = false;
         API.getVideosWithQuery(this.$route.query.q).then((results) => {
@@ -58,12 +57,9 @@
           this.lastError = err;
           this.loading = false;
         });
-      },
-      goToVideo: function (videoId) {
-        this.$router.push({ name: 'video-page', query: { video: videoId } });
       }
     },
-    mounted: function () {
+    mounted() {
       this.loadSearch();
       this.$watch('$route.query.q', this.loadSearch);
     }

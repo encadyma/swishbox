@@ -27,12 +27,14 @@
 
   export default {
     props: ['userQuery', 'isFocused'],
-    data: () => ({
-      loading: true,
-      queryResults: []
-    }),
+    data() {
+      return {
+        loading: true,
+        queryResults: []
+      };
+    },
     watch: {
-      userQuery: function () {
+      userQuery() {
         // Give suggestions based on query results
         this.loading = true;
         API.getSearchSuggestions(this.userQuery).then((suggestions) => {

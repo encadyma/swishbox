@@ -17,19 +17,19 @@
   import NowPlayingWidget from './Header/NowPlayingWidget';
 
   export default {
-    data: function () {
+    data() {
       return { enablePlaylist: false };
     },
     components: { SearchWidget, TrafficLights, PlaylistWidget, NowPlayingWidget },
     methods: {
-      goBack: function () {
+      goBack() {
         document.body.scrollTop = 0;
         if (this.$route.name === 'search-page') return this.$router.push('/');
         return this.$router.go(-1);
       }
     },
     computed: {
-      shouldCompress: function () {
+      shouldCompress() {
         return this.$store.state.compressHeader;
       }
     }

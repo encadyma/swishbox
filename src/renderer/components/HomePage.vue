@@ -12,7 +12,7 @@
 <script>
   export default {
     name: 'home-page',
-    data: function () {
+    data() {
       return {
         version: process.env.SWISHBOX_VERSION,
       };

@@ -13,7 +13,23 @@
 
   export default {
     name: 'swishbox',
-    components: { HeaderBar }
+    components: { HeaderBar },
+    mounted() {
+      this.$electron.ipcRenderer.on("STORAGE_OPEN_PREFERENCES", () => {
+        this.$router.push({ name: 'preferences-page' });
+      });
+      
+      this.$electron.ipcRenderer.on("STORAGE_METADATA_UPDATE", (event, metadata) => {
+        this.$store.commit('STORAGE_VUEX_UPDATE_METADATA', metadata);
+      });
+
+      this.$electron.ipcRenderer.on("STORAGE_PREFERENCES_UPDATE", (event, preferences) => {
+        this.$store.commit('STORAGE_VUEX_UPDATE_PREFERENCES', preferences);
+      });
+
+      this.$electron.ipcRenderer.send("STORAGE_METADATA_FETCH");
+      this.$electron.ipcRenderer.send("STORAGE_PREFERENCES_FETCH");
+    }
   };
 </script>
 
@@ -115,6 +131,19 @@
       background-color: rgba(40, 0, 200, 0.12);
       border-color: rgba(40, 0, 200, 0.8);
     }
+
+    &.red {
+      &:hover {
+        background-color: rgba(#FA2254, 0.04);
+        border-color: rgba(#FA2254, 0.8);
+      }
+      &:active {
+        background-color: rgba(#FA2254, 0.12);
+        border-color: rgba(#FA2254, 1);
+      }
+      border-color: rgba(#FA2254, 0.6);
+      color: #FA2254;
+    }
   }
 
   .swish-bubble-error {
@@ -134,6 +163,10 @@
     pre.fulllog {
       margin: 6px;
     }
+  }
+
+  .swish-max-paragraph {
+    max-width: 80%;
   }
 
   .swish-block-padded-vert { padding: 8px 0; }

@@ -11,6 +11,11 @@ export default new Router({
       component: require('@/components/VideoPlayer').default
     },
     {
+      path: '/preferences',
+      name: 'preferences-page',
+      component: require('@/components/PreferencesPage').default
+    },
+    {
       path: '/search',
       name: 'search-page',
       component: require('@/components/SearchPage').default
