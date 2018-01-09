@@ -115,6 +115,19 @@
       background-color: rgba(40, 0, 200, 0.12);
       border-color: rgba(40, 0, 200, 0.8);
     }
+
+    &.red {
+      &:hover {
+        background-color: rgba(#FA2254, 0.04);
+        border-color: rgba(#FA2254, 0.8);
+      }
+      &:active {
+        background-color: rgba(#FA2254, 0.12);
+        border-color: rgba(#FA2254, 1);
+      }
+      border-color: rgba(#FA2254, 0.6);
+      color: #FA2254;
+    }
   }
 
   .swish-bubble-error {
@@ -134,6 +147,10 @@
     pre.fulllog {
       margin: 6px;
     }
+  }
+
+  .swish-max-paragraph {
+    max-width: 80%;
   }
 
   .swish-block-padded-vert { padding: 8px 0; }

@@ -23,7 +23,7 @@
         this.$electron.ipcRenderer.send('APP_MINIMIZE');
       },
       openSettings() {
-        alert('Settings have not been implemented yet.');
+        this.$router.push({ name: 'preferences-page' });
       },
       openPlaylist() {
         this.$emit('togglePlaylist');

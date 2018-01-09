@@ -155,6 +155,31 @@ function saveYoutubeMetadata(info) {
   });
 }
 
+function purgeCacheFolder() {
+  const cacheFolder = path.join(app.getPath('userData'), 'yt_cache');
+  if (!fs.existsSync(cacheFolder)) return;
+
+  fs.readdirSync(cacheFolder).forEach((file) => {
+    const filePath = path.join(cacheFolder, file);
+    if (fs.lstatSync(filePath).isFile()) fs.unlinkSync(filePath);
+  });
+}
+
+function getCacheFolderSize() {
+  const cacheFolder = path.join(app.getPath('userData'), 'yt_cache');
+  if (!fs.existsSync(cacheFolder)) return 0;
+
+  let totalSize = 0;
+
+  fs.readdirSync(cacheFolder).forEach((file) => {
+    const filePath = path.join(cacheFolder, file);
+    const fileStats = fs.statSync(filePath);
+    if (fileStats.isFile()) totalSize += fileStats.size;
+  });
+
+  return totalSize;
+}
+
 ipcMain.on("STORAGE_METADATA_FETCH", () => {
   const metadataFile = path.join(app.getPath('userData'), 'yt_songs.json');
   const dataFile = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
@@ -165,6 +190,15 @@ ipcMain.on("STORAGE_PREFERENCES_FETCH", () => {
   const prefsFile = path.join(app.getPath('userData'), 'preferences.json');
   const dataFile = JSON.parse(fs.readFileSync(prefsFile, 'utf8'));
   mainWindow.webContents.send("STORAGE_PREFERENCES_UPDATE", dataFile);
+});
+
+ipcMain.on("STORAGE_CACHE_GET_SIZE", () => {
+  mainWindow.webContents.send("STORAGE_CACHE_UPDATE_SIZE", getCacheFolderSize());
+});
+
+ipcMain.on("STORAGE_CACHE_PURGE", () => {
+  purgeCacheFolder();
+  mainWindow.webContents.send("STORAGE_CACHE_UPDATE_SIZE", getCacheFolderSize());
 });
 // END STORAGE CODE
 
