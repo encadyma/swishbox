@@ -17,18 +17,6 @@
         version: process.env.SWISHBOX_VERSION,
       };
     },
-    mounted() {
-      this.$electron.ipcRenderer.on("STORAGE_METADATA_UPDATE", (event, metadata) => {
-        this.$store.commit('STORAGE_VUEX_UPDATE_METADATA', metadata);
-      });
-
-      this.$electron.ipcRenderer.on("STORAGE_PREFERENCES_UPDATE", (event, preferences) => {
-        this.$store.commit('STORAGE_VUEX_UPDATE_PREFERENCES', preferences);
-      });
-
-      this.$electron.ipcRenderer.send("STORAGE_METADATA_FETCH");
-      this.$electron.ipcRenderer.send("STORAGE_PREFERENCES_FETCH");
-    },
     methods: {
       openFeedback() {
         this.$electron.shell.openExternal('https://github.com/encadyma/swishbox/issues');

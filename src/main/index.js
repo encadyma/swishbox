@@ -92,7 +92,7 @@ if (process.platform === 'darwin') {
     submenu: [
       {role: 'about'},
       {type: 'separator'},
-      {label: 'Preferences...', accelerator: 'Cmd+,'},
+      {label: 'Preferences...', accelerator: 'Cmd+,', click() { mainWindow.webContents.send("STORAGE_OPEN_PREFERENCES"); }},
       {type: 'separator'},
       {role: 'services', submenu: []},
       {type: 'separator'},

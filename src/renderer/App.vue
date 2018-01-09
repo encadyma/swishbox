@@ -13,7 +13,23 @@
 
   export default {
     name: 'swishbox',
-    components: { HeaderBar }
+    components: { HeaderBar },
+    mounted() {
+      this.$electron.ipcRenderer.on("STORAGE_OPEN_PREFERENCES", () => {
+        this.$router.push({ name: 'preferences-page' });
+      });
+      
+      this.$electron.ipcRenderer.on("STORAGE_METADATA_UPDATE", (event, metadata) => {
+        this.$store.commit('STORAGE_VUEX_UPDATE_METADATA', metadata);
+      });
+
+      this.$electron.ipcRenderer.on("STORAGE_PREFERENCES_UPDATE", (event, preferences) => {
+        this.$store.commit('STORAGE_VUEX_UPDATE_PREFERENCES', preferences);
+      });
+
+      this.$electron.ipcRenderer.send("STORAGE_METADATA_FETCH");
+      this.$electron.ipcRenderer.send("STORAGE_PREFERENCES_FETCH");
+    }
   };
 </script>
 
