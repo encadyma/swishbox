@@ -133,6 +133,8 @@ function saveYoutubeMetadata(info) {
   const savedMetadata = JSON.parse(fs.readFileSync(metadataFile, 'utf8'));
   if (savedMetadata.ids.indexOf(info.video_id) !== -1) return;
 
+  const remoteThumbnail = (info.iurlhq ? info.iurlhq : `https://i.ytimg.com/vi/${info.video_id}/hqdefault.jpg`);
+
   const videoMetadata = {
     id: info.video_id,
     title: info.title,
@@ -141,7 +143,7 @@ function saveYoutubeMetadata(info) {
     keywords: info.keywords,
     description: info.description,
     thumbnail: thumbnailsPath,
-    remoteThumbnail: info.iurlhq
+    remoteThumbnail: remoteThumbnail
   };
 
   savedMetadata.ids.push(info.video_id);
@@ -150,9 +152,10 @@ function saveYoutubeMetadata(info) {
 
   fs.writeFileSync(metadataFile, JSON.stringify(savedMetadata));
 
-  request(info.iurlhq).pipe(fs.createWriteStream(thumbnailsPath)).on('close', () => {
-    mainWindow.webContents.send("STORAGE_METADATA_UPDATE", savedMetadata);
-  });
+  request(remoteThumbnail)
+    .pipe(fs.createWriteStream(thumbnailsPath)).on('close', () => {
+      mainWindow.webContents.send("STORAGE_METADATA_UPDATE", savedMetadata);
+    });
 }
 
 function purgeCacheFolder() {
@@ -174,10 +177,10 @@ function getCacheFolderSize() {
   fs.readdirSync(cacheFolder).forEach((file) => {
     const filePath = path.join(cacheFolder, file);
     const fileStats = fs.statSync(filePath);
-    if (fileStats.isFile()) totalSize += fileStats.size;
+    if (fileStats.isFile()) totalSize += (fileStats.size / (1024 * 1024));
   });
 
-  return totalSize;
+  return Math.round(totalSize);
 }
 
 ipcMain.on("STORAGE_METADATA_FETCH", () => {
@@ -325,6 +328,7 @@ ipcMain.on('YT_DOWNLOAD', (event, yt) => {
         hasFinished: true,
         path: path.join(videoDir, `${yt}.mp3`)
       });
+      mainWindow.webContents.send("STORAGE_CACHE_UPDATE_SIZE", getCacheFolderSize());
     });
 
     videoProc.run();

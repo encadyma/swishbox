@@ -61,7 +61,9 @@
     },
     methods: {
       cleanCache() {
+        this.$store.dispatch('PLAYLIST_CLEAR_SONGS');
         this.$electron.ipcRenderer.send('STORAGE_CACHE_PURGE');
+        this.hasBegunToClearCache = false;
       }
     }
   };
