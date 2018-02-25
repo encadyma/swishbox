@@ -78,7 +78,7 @@
   #app-header-playlist {
     position: fixed;
     top: 90px;
-    right: 90px;
+    right: 40px;
     border: 1px solid #EFEFEF;
     background-color: rgba(250, 250, 250, 0.9);
     border-radius: 6px;

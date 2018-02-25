@@ -52,6 +52,9 @@
     watch: {
       isFocused(val) {
         // Activate the overlay appropriately.
+        if (this.$store.state.Playlist.playlistMenuOpen) {
+          this.$store.commit('PLAYLIST_MUT_MENU_OPEN', false);
+        }
         this.$store.commit('INTERFACE_MUT_SET_SUGGESTIONS_SCROLL', -1);
         this.$store.dispatch('INTERFACE_SET_OVERLAY', val);
       }
