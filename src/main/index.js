@@ -49,10 +49,7 @@ const template = [
     submenu: [
       {
         label: 'Play/Pause',
-        accelerator: 'Space', 
-        click() {
-          mainWindow.webContents.send("PLAYER_TOGGLE_PLAY");
-        }
+        accelerator: 'Space'
       },
       { 
         label: 'Next', 
@@ -204,6 +201,10 @@ ipcMain.on("STORAGE_CACHE_PURGE", (event) => {
   event.sender.send("STORAGE_CACHE_UPDATE_SIZE", getCacheFolderSize());
 });
 // END STORAGE CODE
+
+ipcMain.on("PLAYER_PINGBACK_TOGGLE_PLAY", (event) => {
+  event.sender.send("PLAYER_TOGGLE_PLAY");
+});
 
 function createWindow() {
   /**
