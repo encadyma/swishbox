@@ -31,6 +31,13 @@
 
       this.$electron.ipcRenderer.send("STORAGE_METADATA_FETCH");
       this.$electron.ipcRenderer.send("STORAGE_PREFERENCES_FETCH");
+
+      window.addEventListener('keydown', (e) => {
+        if (e.keyCode === 32 && !e.shiftKey && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
     }
   };
 </script>

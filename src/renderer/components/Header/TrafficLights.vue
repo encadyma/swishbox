@@ -53,7 +53,7 @@
     display: inline-block;
     cursor: pointer;
     width: 36px;
-    height: 48px;
+    height: 50px;
     padding: 12px 6px;
     // border-radius: 3px;
     color: rgba(100, 100, 100, 0.6);
