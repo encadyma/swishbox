@@ -1,12 +1,14 @@
 <template>
-  <div style="position: relative;">
-    <canvas id="app-head-now-playing" width="480" height="80" ref="appHeadCanvas"></canvas>
-    <div id="app-head-now-playing-overlay" v-if="currentPosition !== -1">
-      <div style="margin: 0 auto; text-align: center;">
-        <i class="material-icons swish-mi-sec" @click="sendPlaylistBackwards" :class="{disabled: currentPosition === 0}">skip_previous</i>
-        <i class="material-icons swish-mi-prime" v-if="!isPlaying" @click="startPlay()">play_arrow</i>
-        <i class="material-icons swish-mi-prime" v-if="isPlaying" @click="stopPlay()">pause</i>
-        <i class="material-icons swish-mi-sec" @click="sendPlaylistForwards" :class="{disabled: currentPosition === currentPlaylist.length - 1}">skip_next</i>
+  <div style="display: flex;">
+    <div style="position: relative;">
+      <canvas id="app-head-now-playing" width="480" height="80" ref="appHeadCanvas"></canvas>
+      <div id="app-head-now-playing-overlay" v-if="currentPosition !== -1">
+        <div style="margin: 0 auto; text-align: center;">
+          <i class="material-icons swish-mi-sec" @click="sendPlaylistBackwards" :class="{disabled: currentPosition === 0}">skip_previous</i>
+          <i class="material-icons swish-mi-prime" v-if="!isPlaying" @click="startPlay()">play_arrow</i>
+          <i class="material-icons swish-mi-prime" v-if="isPlaying" @click="stopPlay()">pause</i>
+          <i class="material-icons swish-mi-sec" @click="sendPlaylistForwards" :class="{disabled: currentPosition === currentPlaylist.length - 1}">skip_next</i>
+        </div>
       </div>
     </div>
   </div>
@@ -319,5 +321,43 @@ export default {
 
 .swish-mi-prime {
   font-size: 36px;
+}
+
+.swish-now-playing-action-btn {
+  display: inline-block;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  padding: 12px 16px;
+  // border-radius: 3px;
+  color: rgba(100, 100, 100, 0.6);
+  overflow: hidden;
+  // margin: 0 2px;
+  border-bottom: 2px solid transparent;
+  transition: 200ms ease;
+
+  & .material-icons { font-size: 24px; }
+  & .swish-mi-smaller { font-size: 18px; padding: 3px 4px; }
+
+  &:hover {
+    background-color: rgba(100, 100, 100, 0.2);
+    color: rgba(100, 100, 100, 0.8);
+  }
+
+  &:active {
+    background-color: rgba(100, 100, 100, 0.3);
+  }
+
+  &.visiting {
+    background-color: #EFEFEF;
+    border-color: #6823AE;
+    color: #6823AE;
+
+    &:hover { background-color: rgba(100, 100, 100, 0.2); }
+  }
+
+  &.enabled {
+    color: #6823AE;
+  }
 }
 </style>

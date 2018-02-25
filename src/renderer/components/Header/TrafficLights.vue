@@ -2,26 +2,11 @@
   <div id="app-electron-traffic-lights">
     <div class="swish-electron-traffic-light" @click="openPlaylist" :class="playlistClasses"><i class="material-icons" style="margin-left: 2px;">playlist_play</i></div>
     <div class="swish-electron-traffic-light" @click="openSettings" :class="settingsClasses"><i class="material-icons swish-mi-smaller">settings</i></div>
-    <div class="swish-electron-traffic-light" @click="minimizeApp"><i class="material-icons">remove</i></div>
-    <div class="swish-electron-traffic-light" @click="closeApp"><i class="material-icons">close</i></div>
   </div>
 </template>
 <script>
   export default {
     methods: {
-      closeApp() {
-        this.$modal.show('dialog', {
-          title: 'Confirm Quit',
-          text: 'Are you sure you want to quit Swishbox?',
-          buttons: [
-            { title: 'CANCEL', default: true, },
-            { title: '<span class="swish-dialog-error">YES, QUIT</span>', handler: () => { this.$electron.ipcRenderer.send('APP_CLOSE'); } }
-          ]
-        });
-      },
-      minimizeApp() {
-        this.$electron.ipcRenderer.send('APP_MINIMIZE');
-      },
       openSettings() {
         if (this.$route.name === 'preferences-page') this.$router.go(-1);
         else this.$router.push({ name: 'preferences-page' });

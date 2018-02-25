@@ -39,6 +39,7 @@
           target.tagName !== 'INPUT' &&
           target.tagName !== 'TEXTAREA') {
           e.preventDefault();
+          this.$electron.ipcRenderer.send("PLAYER_PINGBACK_TOGGLE_PLAY");
         }
       });
     }
