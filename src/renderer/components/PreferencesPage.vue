@@ -72,7 +72,7 @@
 <style>
 #app-preferences {
   display: grid;
-  padding: 20vh 10vw;
+  padding: 24vh 10vw;
   grid-template-columns: 1fr 3fr;
   grid-gap: 40px;
   grid-auto-rows: min-content;

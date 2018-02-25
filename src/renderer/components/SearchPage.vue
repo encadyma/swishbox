@@ -69,7 +69,7 @@
 <style lang="scss">
   #app-search-results-head {
     padding: 10px 40px;
-    margin-top: 10px;
+    margin-top: 20px;
 
     & > * { display: inline-block; }
     .swish-text-subtitle { font-size: 1em; margin-left: 10px; }
