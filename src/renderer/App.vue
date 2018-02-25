@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <sub-header></sub-header>
     <header-bar></header-bar>
     <div id="app-overlay" :class="{ hidden: !$store.state.Interface.overlayEnabled }"></div>
     <router-view></router-view>
@@ -10,10 +11,11 @@
 
 <script>
   import HeaderBar from './components/HeaderBar';
+  import SubHeader from './components/Header/Subheader';
 
   export default {
     name: 'swishbox',
-    components: { HeaderBar },
+    components: { HeaderBar, SubHeader },
     mounted() {
       this.$electron.ipcRenderer.on("STORAGE_OPEN_PREFERENCES", () => {
         this.$router.push({ name: 'preferences-page' });

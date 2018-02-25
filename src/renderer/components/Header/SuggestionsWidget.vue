@@ -48,7 +48,7 @@
 <style lang="scss">
   #app-search-suggestions {
     position: fixed;
-    top: 60px;
+    top: 90px;
     border: 1px solid #EFEFEF;
     background-color: rgba(250, 250, 250, 0.9);
     border-radius: 6px;

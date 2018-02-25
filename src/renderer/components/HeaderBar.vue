@@ -43,13 +43,12 @@
     display: flex;
     background-color: rgba(250, 250, 250, 0.9);
     position: fixed;
-    top: 0;
+    top: 30px;
     box-sizing: border-box;
     padding: 0 20px;
     width: 100%;
     z-index: 100;
     min-height: 48px;
-    -webkit-app-region: drag;
 
     align-items: center;
     justify-content: space-between;
