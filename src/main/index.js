@@ -218,7 +218,7 @@ function createWindow() {
     fullscreenable: false,
     vibrancy: 'light',
     title: 'Swishbox',
-    titleBarStyle: 'customButtonsOnHover',
+    // titleBarStyle: 'customButtonsOnHover',
     webPreferences: {
       experimentalFeatures: true,
       backgroundThrottling: false

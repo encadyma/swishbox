@@ -72,7 +72,13 @@ export default {
       this.$store.commit('PLAYLIST_MUT_UPDATE_SONG_PROGRESS', progressObj);
     });
 
-    this.$electron.ipcRenderer.on('PLAYER_TOGGLE_PLAY', (this.isPlaying ? this.stopPlay : this.startPlay));
+    this.$electron.ipcRenderer.on('PLAYER_TOGGLE_PLAY', () => {
+      if (this.isPlaying) {
+        this.stopPlay();
+      } else {
+        this.startPlay();
+      }
+    });
     this.$electron.ipcRenderer.on('PLAYER_PREVIOUS_SONG', this.sendPlaylistBackwards);
     this.$electron.ipcRenderer.on('PLAYER_NEXT_SONG', this.sendPlaylistForwards);
   },
