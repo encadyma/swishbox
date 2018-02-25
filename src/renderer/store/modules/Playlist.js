@@ -4,7 +4,7 @@ const state = {
   playlist: [],
   currentPosition: -1,
   masterQueue: {},
-  menuOpen: false
+  playlistMenuOpen: false
 };
 
 const mutations = {
@@ -35,7 +35,7 @@ const mutations = {
     Vue.set(state.masterQueue, progressObj.id, progressObj);
   },
   PLAYLIST_MUT_MENU_OPEN(state, isOpen) {
-    state.menuOpen = isOpen;
+    state.playlistMenuOpen = isOpen;
   }
 };
 

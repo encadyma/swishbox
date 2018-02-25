@@ -6,7 +6,7 @@
     </transition>
     <search-widget style="width: 45%; -webkit-app-region: no-drag;" :class="{ disabled: $store.state.Interface.hideHeader }"></search-widget>
     <now-playing-widget style="width: 25%;"></now-playing-widget>
-    <traffic-lights @togglePlaylist="enablePlaylist = !enablePlaylist"></traffic-lights>
+    <traffic-lights @togglePlaylist="togglePlaylist()"></traffic-lights>
     <playlist-widget :isPlaylistToggled="enablePlaylist"></playlist-widget>
   </header>
 </template>
@@ -17,20 +17,23 @@
   import NowPlayingWidget from './Header/NowPlayingWidget';
 
   export default {
-    data() {
-      return { enablePlaylist: false };
-    },
     components: { SearchWidget, TrafficLights, PlaylistWidget, NowPlayingWidget },
     methods: {
       goBack() {
         document.body.scrollTop = 0;
         if (this.$route.name === 'search-page') return this.$router.push('/');
         return this.$router.go(-1);
+      },
+      togglePlaylist() {
+        this.$store.commit('PLAYLIST_MUT_MENU_OPEN', !this.$store.state.Playlist.playlistMenuOpen);
       }
     },
     computed: {
       shouldCompress() {
         return this.$store.state.compressHeader;
+      },
+      enablePlaylist() {
+        return this.$store.state.Playlist.playlistMenuOpen;
       }
     }
   };
