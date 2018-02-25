@@ -1,7 +1,9 @@
 const state = {
   overlayEnabled: false,
   hideHeader: false,
-  compressHeader: false
+  compressHeader: false,
+  suggestionsScroll: -1,
+  suggestionsResults: []
 };
 
 const mutations = {
@@ -10,6 +12,11 @@ const mutations = {
   },
   INTERFACE_MUT_SET_HEADER_STATE(state, payload) {
     state.hideHeader = payload;
+  },
+  INTERFACE_MUT_SET_SUGGESTIONS_SCROLL(state, position) {
+    if (position < -1) state.suggestionsScroll = -1;
+    else if (position >= state.suggestionsResults.length) state.suggestionsScroll = state.suggestionsResults.length - 1;
+    else state.suggestionsScroll = position;
   }
 };
 

@@ -1,6 +1,6 @@
 <template>
   <div id="app-search">
-    <input class="swish-omni" :placeholder="placeholder" v-model.trim="userQuery" @keyup.enter="submitQuery()" @focus="isFocused = true" @blur="isFocused = false" v-focus="isFocused"/>
+    <input class="swish-omni" :placeholder="placeholder" v-model.trim="userQuery" @keyup.enter="submitQuery()" @keydown.down.prevent="moveScrollDown()" @keydown.up.prevent="moveScrollUp()" @keydown.left.prevent="returnToLastQuery()" @keydown.right.prevent="setSearchQuery()" @focus="isFocused = true" @blur="isFocused = false" v-focus="isFocused"/>
     <suggestion-widget :user-query="userQuery" :isFocused="isFocused" @updateQuery="updateQuery"></suggestion-widget>
   </div>
 </template>
@@ -14,7 +14,8 @@
     data: () => ({
       isFocused: false,
       placeholder: 'Search for music...',
-      userQuery: ''
+      userQuery: '',
+      queriesHistory: []
     }),
     methods: {
       updateQuery(newQuery) {
@@ -26,12 +27,41 @@
         // Defocus the search box and navigate to the search page
         this.isFocused = false;
         if (this.userQuery) this.$router.push({ name: 'search-page', query: { q: this.userQuery } });
+      },
+      moveScrollDown() {
+        this.$store.commit('INTERFACE_MUT_SET_SUGGESTIONS_SCROLL', this.suggestionsScroll + 1);
+      },
+      moveScrollUp() {
+        this.$store.commit('INTERFACE_MUT_SET_SUGGESTIONS_SCROLL', this.suggestionsScroll - 1);
+      },
+      setSearchQuery() {
+        if (
+          this.suggestionsScroll > -1 && 
+          this.suggestionsScroll < this.suggestionsResults.length
+        ) {
+          this.queriesHistory.push(this.userQuery);
+          this.userQuery = this.suggestionsResults[this.suggestionsScroll].title;
+        }
+      },
+      returnToLastQuery() {
+        if (this.queriesHistory.length) {
+          this.userQuery = this.queriesHistory.pop();
+        }
       }
     },
     watch: {
       isFocused(val) {
         // Activate the overlay appropriately.
+        this.$store.commit('INTERFACE_MUT_SET_SUGGESTIONS_SCROLL', -1);
         this.$store.dispatch('INTERFACE_SET_OVERLAY', val);
+      }
+    },
+    computed: {
+      suggestionsScroll() {
+        return this.$store.state.Interface.suggestionsScroll;
+      },
+      suggestionsResults() {
+        return this.$store.state.Interface.suggestionsResults;
       }
     },
     mounted() {

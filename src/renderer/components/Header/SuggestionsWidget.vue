@@ -5,7 +5,7 @@
       <div class="swish-text-minitext" v-if="userQuery">SEARCHING FOR {{userQuery}}</div>
 
       <!-- BEGIN SUGGESTIONS -->
-      <div class="swish-search-suggestion" v-for="result of queryResults" :key="result.title" v-show="userQuery" @click="$emit('updateQuery', result.title)">
+      <div class="swish-search-suggestion" v-for="(result, index) of queryResults" :key="result.title" v-show="userQuery" @click="$emit('updateQuery', result.title)" :class="{ selected: currentScrolledSuggestion === index}">
         <div class="swish-search-suggestion-title">
           <span class="swish-text-title">{{ result.title }}</span>
           <span class="swish-text-subtitle" v-if="result.subtitle">{{ result.subtitle }}</span>
@@ -29,9 +29,16 @@
     props: ['userQuery', 'isFocused'],
     data() {
       return {
-        loading: true,
-        queryResults: []
+        loading: true
       };
+    },
+    computed: {
+      currentScrolledSuggestion() {
+        return this.$store.state.Interface.suggestionsScroll;
+      },
+      queryResults() {
+        return this.$store.state.Interface.suggestionsResults;
+      }
     },
     watch: {
       userQuery() {
@@ -39,7 +46,7 @@
         this.loading = true;
         API.getSearchSuggestions(this.userQuery).then((suggestions) => {
           this.loading = false;
-          this.queryResults = suggestions;
+          this.$store.state.Interface.suggestionsResults = suggestions;
         });
       }
     }
@@ -49,7 +56,7 @@
   #app-search-suggestions {
     position: fixed;
     top: 90px;
-    border: 1px solid #EFEFEF;
+    // border: 1px solid #EFEFEF;
     background-color: rgba(250, 250, 250, 0.9);
     border-radius: 6px;
     width: 60%;
@@ -70,6 +77,10 @@
     &:hover {
       background-color: rgba(100, 100, 100, 0.1);
       cursor: pointer;
+    }
+
+    &.selected {
+      background-color: rgba(100, 100, 100, 0.2);
     }
   }
 </style>
