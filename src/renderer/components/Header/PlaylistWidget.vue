@@ -77,7 +77,7 @@
 <style lang="scss">
   #app-header-playlist {
     position: fixed;
-    top: 80px;
+    top: 60px;
     right: 90px;
     border: 1px solid #EFEFEF;
     background-color: rgba(250, 250, 250, 0.9);

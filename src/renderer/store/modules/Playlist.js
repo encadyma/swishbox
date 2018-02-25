@@ -3,7 +3,8 @@ import Vue from 'vue';
 const state = {
   playlist: [],
   currentPosition: -1,
-  masterQueue: {}
+  masterQueue: {},
+  menuOpen: false
 };
 
 const mutations = {
@@ -32,6 +33,9 @@ const mutations = {
   },
   PLAYLIST_MUT_UPDATE_SONG_PROGRESS(state, progressObj) {
     Vue.set(state.masterQueue, progressObj.id, progressObj);
+  },
+  PLAYLIST_MUT_MENU_OPEN(state, isOpen) {
+    state.menuOpen = isOpen;
   }
 };
 

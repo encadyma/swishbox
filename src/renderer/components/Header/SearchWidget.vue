@@ -45,19 +45,20 @@
 <style lang="scss">
   .swish-omni {
     border: 0;
-    background-color: #DFDFDF;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 1.2em;
+    background-color: #EAEAEA;
+    padding: 12px 12px;
+    // border-radius: 6px;
+    font-size: 1em;
     width: 100%;
     outline: none;
     border: 4px solid rgba(0, 0, 200, 0);
     transition: 200ms ease;
   }
   .swish-omni:focus {
-    animation: input-focus 200ms ease-out;
-    box-shadow: 0 0 16px 0 rgba(40, 0, 200, 0.2);
-    border-color: rgba(40, 0, 200, 0.2);
+    // animation: input-focus 200ms ease-out;
+    // box-shadow: 0 0 16px 0 rgba(40, 0, 200, 0.2);
+    // border-color: rgba(40, 0, 200, 0.2);
+    background-color: #D8D8D8;
     transition: 200ms ease;
   }
 

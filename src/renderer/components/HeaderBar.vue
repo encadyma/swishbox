@@ -42,10 +42,10 @@
     position: fixed;
     top: 0;
     box-sizing: border-box;
-    padding: 14px 20px;
+    padding: 0 20px;
     width: 100%;
     z-index: 100;
-    min-height: 70px;
+    min-height: 48px;
     -webkit-app-region: drag;
 
     align-items: center;
@@ -57,11 +57,12 @@
     .app-head-title { 
       cursor: pointer;
       font-weight: 300;
-      margin: 0 10px;
+      margin: 0;
       min-width: 80px;
       text-align: center;
       -webkit-user-select: none;
       transition: 250ms ease;
+      font-size: 1.6em;
 
       &.material-icons { font-size: 1.8em; color: rgba(0, 0, 0, 0.6); }
       &.material-icons:hover { color: rgba(0, 0, 0, 0.8); }

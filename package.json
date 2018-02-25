@@ -1,6 +1,6 @@
 {
   "name": "swishbox",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Kevin Mo <encadyma.hi@gmail.com>",
   "description": "Experimental desktop music player for those who use Youtube for music.",
   "license": "GPL-3.0",
@@ -68,7 +68,7 @@
     "vue-router": "^2.5.3",
     "vue-scroll": "^2.1.6",
     "vuex": "^2.3.1",
-    "ytdl-core": "^0.18.7"
+    "ytdl-core": "^0.20.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

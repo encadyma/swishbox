@@ -6,11 +6,6 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: '/video',
-      name: 'video-page',
-      component: require('@/components/VideoPlayer').default
-    },
-    {
       path: '/preferences',
       name: 'preferences-page',
       component: require('@/components/PreferencesPage').default

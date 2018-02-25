@@ -242,7 +242,8 @@ function createLoadingWindow() {
     resizable: false,
     frame: false,
     fullscreenable: false,
-    title: 'Loading Swishbox..'
+    title: 'Loading Swishbox..',
+    backgroundColor: '#F4EFEA'
   });
 
   loadingWindow.loadURL(loadingURL);
@@ -262,8 +263,8 @@ function createLoadingWindow() {
   ffbinaries.downloadFiles(['ffmpeg'], {
     destination: ffmpegInstallPath
   }, () => {
-    loadingWindow.destroy();
     createWindow();
+    loadingWindow.destroy();
   });
 }
 
