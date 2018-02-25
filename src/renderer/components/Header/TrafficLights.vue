@@ -23,7 +23,8 @@
         this.$electron.ipcRenderer.send('APP_MINIMIZE');
       },
       openSettings() {
-        this.$router.push({ name: 'preferences-page' });
+        if (this.$route.name === 'preferences-page') this.$router.go(-1);
+        else this.$router.push({ name: 'preferences-page' });
       },
       openPlaylist() {
         this.$emit('togglePlaylist');
