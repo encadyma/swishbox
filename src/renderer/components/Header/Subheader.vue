@@ -54,6 +54,7 @@
 export default {
   methods: {
     closeApp() {
+      this.$modal.hide('dialog');
       this.$modal.show('dialog', {
         title: 'Confirm Quit',
         text: 'Are you sure you want to quit Swishbox?',

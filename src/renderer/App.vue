@@ -59,6 +59,10 @@
     background: rgba(40, 0, 200, 0.2);
   }
 
+  ::-webkit-scrollbar { 
+    display: none; 
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
