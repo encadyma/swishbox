@@ -33,6 +33,7 @@
     display: flex;
     vertical-align: middle;
     -webkit-user-select: none;
+    user-select: none;
   }
   .swish-electron-traffic-light {
     display: inline-block;

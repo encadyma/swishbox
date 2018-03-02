@@ -20,7 +20,7 @@
   max-height: 30px;
   justify-content: space-between;
   -webkit-app-region: drag;
-  z-index: 9999;
+  z-index: 10000;
   transition: 150ms ease;
 
   .app-subheader-title-main {
@@ -33,6 +33,7 @@
 
   .app-subheader-traffic-lights {
     display: flex;
+    -webkit-app-region: no-drag;
 
     .app-subheader-traffic-light {
       padding: 6px 8px;
